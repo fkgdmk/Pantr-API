@@ -14,9 +14,31 @@ namespace PantrTest.Models.DataModels
     
     public partial class tbl_User
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tbl_User()
+        {
+            this.tbl_Post = new HashSet<tbl_Post>();
+            this.tbl_Report = new HashSet<tbl_Report>();
+            this.tbl_Report1 = new HashSet<tbl_Report>();
+            this.tbl_Transaction = new HashSet<tbl_Transaction>();
+        }
+    
         public int PK_User { get; set; }
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
         public string Surname { get; set; }
-        public Nullable<int> Age { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public Nullable<bool> IsPanter { get; set; }
+        public Nullable<int> FK_Address { get; set; }
+    
+        public virtual tbl_Address tbl_Address { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_Post> tbl_Post { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_Report> tbl_Report { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_Report> tbl_Report1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tbl_Transaction> tbl_Transaction { get; set; }
     }
 }
