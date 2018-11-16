@@ -7,20 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PantrTest.Models.DataModels
+namespace PantrTest.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_Transaction
+    public partial class tbl_Report
     {
-        public int PK_Transaction { get; set; }
-        public Nullable<int> FK_Post { get; set; }
-        public Nullable<int> FK_Panter { get; set; }
-        public Nullable<bool> Collected { get; set; }
-        public Nullable<bool> Annulled { get; set; }
+        public int PK_Report { get; set; }
+        public Nullable<int> FK_Reporter { get; set; }
+        public Nullable<int> FK_Reported { get; set; }
+        public string Report { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     
-        public virtual tbl_Post tbl_Post { get; set; }
         public virtual tbl_User tbl_User { get; set; }
+        public virtual tbl_User tbl_User1 { get; set; }
     }
 }

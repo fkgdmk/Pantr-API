@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PantrModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="PantrDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tbl_Address">
           <Key>
             <PropertyRef Name="PK_Address" />
@@ -36,11 +36,12 @@
           <Property Name="FK_Giver" Type="int" />
           <Property Name="FK_Material" Type="int" />
           <Property Name="FK_PostQuantity" Type="int" />
-          <Property Name="StartTime" Type="datetime2" Precision="7" />
-          <Property Name="EndTime" Type="datetime2" Precision="7" />
+          <Property Name="StartTime" Type="int" />
+          <Property Name="EndTime" Type="int" />
           <Property Name="Claimed" Type="bit" />
           <Property Name="Completed" Type="bit" />
           <Property Name="Address" Type="varchar" MaxLength="100" />
+          <Property Name="Date" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="tbl_PostQuantity">
           <Key>
@@ -209,7 +210,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="PantrModelStoreContainer">
+        <EntityContainer Name="PantrDatabaseModelStoreContainer">
           <EntitySet Name="tbl_Address" EntityType="Self.tbl_Address" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_City" EntityType="Self.tbl_City" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" Schema="dbo" store:Type="Tables" />
@@ -264,7 +265,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="PantrModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="PantrDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="tbl_Address">
           <Key>
             <PropertyRef Name="PK_Address" />
@@ -300,11 +301,12 @@
           <Property Name="FK_Giver" Type="Int32" />
           <Property Name="FK_Material" Type="Int32" />
           <Property Name="FK_PostQuantity" Type="Int32" />
-          <Property Name="StartTime" Type="DateTime" Precision="7" />
-          <Property Name="EndTime" Type="DateTime" Precision="7" />
+          <Property Name="StartTime" Type="Int32" />
+          <Property Name="EndTime" Type="Int32" />
           <Property Name="Claimed" Type="Boolean" />
           <Property Name="Completed" Type="Boolean" />
           <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Date" Type="DateTime" Precision="7" />
           <NavigationProperty Name="tbl_Material" Relationship="Self.FK_tbl_Post_tbl_Material" FromRole="tbl_Post" ToRole="tbl_Material" />
           <NavigationProperty Name="tbl_PostQuantity" Relationship="Self.FK_tbl_Post_tbl_PostQuantity" FromRole="tbl_Post" ToRole="tbl_PostQuantity" />
           <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_Post_tbl_User" FromRole="tbl_Post" ToRole="tbl_User" />
@@ -489,7 +491,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="PantrEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="PantrDatabaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tbl_Address" EntityType="Self.tbl_Address" />
           <EntitySet Name="tbl_City" EntityType="Self.tbl_City" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" />
@@ -545,9 +547,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="PantrModelStoreContainer" CdmEntityContainer="PantrEntities">
+        <EntityContainerMapping StorageEntityContainer="PantrDatabaseModelStoreContainer" CdmEntityContainer="PantrDatabaseEntities">
           <EntitySetMapping Name="tbl_Address">
-            <EntityTypeMapping TypeName="PantrModel.tbl_Address">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Address">
               <MappingFragment StoreEntitySet="tbl_Address">
                 <ScalarProperty Name="PK_Address" ColumnName="PK_Address" />
                 <ScalarProperty Name="FK_City" ColumnName="FK_City" />
@@ -556,7 +558,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_City">
-            <EntityTypeMapping TypeName="PantrModel.tbl_City">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_City">
               <MappingFragment StoreEntitySet="tbl_City">
                 <ScalarProperty Name="PK_City" ColumnName="PK_City" />
                 <ScalarProperty Name="Zipcode" ColumnName="Zipcode" />
@@ -565,7 +567,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Material">
-            <EntityTypeMapping TypeName="PantrModel.tbl_Material">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Material">
               <MappingFragment StoreEntitySet="tbl_Material">
                 <ScalarProperty Name="PK_Material" ColumnName="PK_Material" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
@@ -573,7 +575,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Post">
-            <EntityTypeMapping TypeName="PantrModel.tbl_Post">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Post">
               <MappingFragment StoreEntitySet="tbl_Post">
                 <ScalarProperty Name="PK_Post" ColumnName="PK_Post" />
                 <ScalarProperty Name="FK_Giver" ColumnName="FK_Giver" />
@@ -584,11 +586,12 @@
                 <ScalarProperty Name="Claimed" ColumnName="Claimed" />
                 <ScalarProperty Name="Completed" ColumnName="Completed" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_PostQuantity">
-            <EntityTypeMapping TypeName="PantrModel.tbl_PostQuantity">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_PostQuantity">
               <MappingFragment StoreEntitySet="tbl_PostQuantity">
                 <ScalarProperty Name="PK_PostQuantity" ColumnName="PK_PostQuantity" />
                 <ScalarProperty Name="FK_QuantityType" ColumnName="FK_QuantityType" />
@@ -597,7 +600,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_QuantityType">
-            <EntityTypeMapping TypeName="PantrModel.tbl_QuantityType">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_QuantityType">
               <MappingFragment StoreEntitySet="tbl_QuantityType">
                 <ScalarProperty Name="PK_QuantityType" ColumnName="PK_QuantityType" />
                 <ScalarProperty Name="QuantityType" ColumnName="QuantityType" />
@@ -605,7 +608,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Report">
-            <EntityTypeMapping TypeName="PantrModel.tbl_Report">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Report">
               <MappingFragment StoreEntitySet="tbl_Report">
                 <ScalarProperty Name="PK_Report" ColumnName="PK_Report" />
                 <ScalarProperty Name="FK_Reporter" ColumnName="FK_Reporter" />
@@ -616,7 +619,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Transaction">
-            <EntityTypeMapping TypeName="PantrModel.tbl_Transaction">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Transaction">
               <MappingFragment StoreEntitySet="tbl_Transaction">
                 <ScalarProperty Name="PK_Transaction" ColumnName="PK_Transaction" />
                 <ScalarProperty Name="FK_Post" ColumnName="FK_Post" />
@@ -627,7 +630,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_User">
-            <EntityTypeMapping TypeName="PantrModel.tbl_User">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_User">
               <MappingFragment StoreEntitySet="tbl_User">
                 <ScalarProperty Name="PK_User" ColumnName="PK_User" />
                 <ScalarProperty Name="Firstname" ColumnName="Firstname" />

@@ -7,25 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PantrTest.Models.DataModels
+namespace PantrTest.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_Address
+    public partial class tbl_Material
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tbl_Address()
+        public tbl_Material()
         {
-            this.tbl_User = new HashSet<tbl_User>();
+            this.tbl_Post = new HashSet<tbl_Post>();
         }
     
-        public int PK_Address { get; set; }
-        public Nullable<int> FK_City { get; set; }
-        public string Address { get; set; }
+        public int PK_Material { get; set; }
+        public string Type { get; set; }
     
-        public virtual tbl_City tbl_City { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tbl_User> tbl_User { get; set; }
+        public virtual ICollection<tbl_Post> tbl_Post { get; set; }
     }
 }

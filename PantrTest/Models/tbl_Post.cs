@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PantrTest.Models.DataModels
+namespace PantrTest.Models
 {
     using System;
     using System.Collections.Generic;
@@ -24,11 +24,12 @@ namespace PantrTest.Models.DataModels
         public Nullable<int> FK_Giver { get; set; }
         public Nullable<int> FK_Material { get; set; }
         public Nullable<int> FK_PostQuantity { get; set; }
-        public Nullable<System.DateTime> StartTime { get; set; }
-        public Nullable<System.DateTime> EndTime { get; set; }
+        public Nullable<int> StartTime { get; set; }
+        public Nullable<int> EndTime { get; set; }
         public Nullable<bool> Claimed { get; set; }
         public Nullable<bool> Completed { get; set; }
         public string Address { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     
         public virtual tbl_Material tbl_Material { get; set; }
         public virtual tbl_PostQuantity tbl_PostQuantity { get; set; }

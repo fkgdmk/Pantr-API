@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PantrTest.Models.DataModels
+namespace PantrTest.Models
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class PantrEntities : DbContext
+    public partial class PantrDatabaseEntities : DbContext
     {
-        public PantrEntities()
-            : base("name=PantrEntities")
+        public PantrDatabaseEntities()
+            : base("name=PantrDatabaseEntities")
         {
         }
     
