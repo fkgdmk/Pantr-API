@@ -237,6 +237,9 @@
     <Compile Include="Models\DataModels\tbl_User.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\MaterialViewModel.cs" />
+    <Compile Include="Models\ViewModels\PostViewModel.cs" />
+    <Compile Include="Models\ViewModels\TransactionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -314,7 +317,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
