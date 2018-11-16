@@ -10,6 +10,7 @@ using PantrTest.Models.DataModels;
 
 namespace PantrTest.Controllers
 {
+
     public class UsersController : ApiController
     {
         public IEnumerable<tbl_User> Get()
@@ -23,15 +24,13 @@ namespace PantrTest.Controllers
             return users;
         }
 
-        // GET api/values/5
         public tbl_User Get(int id)
         {
-            tbl_User user;
+            tbl_User user = null;
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 user = db.tbl_User.FirstOrDefault(c => c.PK_User == id);
             }
-
             return user;
         }
 
