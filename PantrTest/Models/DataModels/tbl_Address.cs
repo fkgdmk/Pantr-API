@@ -24,8 +24,8 @@ namespace PantrTest.Models.DataModels
         public Nullable<int> FK_City { get; set; }
         public string Address { get; set; }
     
-        public virtual tbl_City tbl_City { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_User> tbl_User { get; set; }
+        public virtual tbl_City tbl_City { get; set; }
     }
 }

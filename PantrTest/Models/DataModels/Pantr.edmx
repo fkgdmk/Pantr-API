@@ -4,22 +4,22 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PantrDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="PantrDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tbl_Address">
           <Key>
             <PropertyRef Name="PK_Address" />
           </Key>
           <Property Name="PK_Address" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FK_City" Type="int" />
           <Property Name="Address" Type="nvarchar" MaxLength="75" />
+          <Property Name="FK_City" Type="int" />
         </EntityType>
         <EntityType Name="tbl_City">
           <Key>
             <PropertyRef Name="PK_City" />
           </Key>
-          <Property Name="PK_City" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Zipcode" Type="varchar" MaxLength="4" />
-          <Property Name="City" Type="varchar" MaxLength="25" />
+          <Property Name="PK_City" Type="int" Nullable="false" />
+          <Property Name="Zip" Type="int" Nullable="false" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Material">
           <Key>
@@ -261,8 +261,7 @@
             <End Role="tbl_User" EntitySet="tbl_User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PantrDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -273,17 +272,8 @@
           <Property Name="PK_Address" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FK_City" Type="Int32" />
           <Property Name="Address" Type="String" MaxLength="75" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tbl_City" Relationship="Self.FK_tbl_Address_tbl_City" FromRole="tbl_Address" ToRole="tbl_City" />
           <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_User_tbl_Address" FromRole="tbl_Address" ToRole="tbl_User" />
-        </EntityType>
-        <EntityType Name="tbl_City">
-          <Key>
-            <PropertyRef Name="PK_City" />
-          </Key>
-          <Property Name="PK_City" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Zipcode" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="City" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="tbl_Address" Relationship="Self.FK_tbl_Address_tbl_City" FromRole="tbl_City" ToRole="tbl_Address" />
+          <NavigationProperty Name="tbl_City" Relationship="PantrDatabaseModel.FK_tbl_Address_tbl_City" FromRole="tbl_Address" ToRole="tbl_City" />
         </EntityType>
         <EntityType Name="tbl_Material">
           <Key>
@@ -371,18 +361,6 @@
           <NavigationProperty Name="tbl_Report1" Relationship="Self.FK_tbl_Report_tbl_User1" FromRole="tbl_User" ToRole="tbl_Report" />
           <NavigationProperty Name="tbl_Transaction" Relationship="Self.FK_tbl_Transaction_tbl_User" FromRole="tbl_User" ToRole="tbl_Transaction" />
         </EntityType>
-        <Association Name="FK_tbl_Address_tbl_City">
-          <End Role="tbl_City" Type="Self.tbl_City" Multiplicity="0..1" />
-          <End Role="tbl_Address" Type="Self.tbl_Address" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_City">
-              <PropertyRef Name="PK_City" />
-            </Principal>
-            <Dependent Role="tbl_Address">
-              <PropertyRef Name="FK_City" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tbl_User_tbl_Address">
           <End Role="tbl_Address" Type="Self.tbl_Address" Multiplicity="0..1" />
           <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="*" />
@@ -493,7 +471,6 @@
         </Association>
         <EntityContainer Name="PantrDatabaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tbl_Address" EntityType="Self.tbl_Address" />
-          <EntitySet Name="tbl_City" EntityType="Self.tbl_City" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" />
           <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" />
           <EntitySet Name="tbl_PostQuantity" EntityType="Self.tbl_PostQuantity" />
@@ -501,10 +478,6 @@
           <EntitySet Name="tbl_Report" EntityType="Self.tbl_Report" />
           <EntitySet Name="tbl_Transaction" EntityType="Self.tbl_Transaction" />
           <EntitySet Name="tbl_User" EntityType="Self.tbl_User" />
-          <AssociationSet Name="FK_tbl_Address_tbl_City" Association="Self.FK_tbl_Address_tbl_City">
-            <End Role="tbl_City" EntitySet="tbl_City" />
-            <End Role="tbl_Address" EntitySet="tbl_Address" />
-          </AssociationSet>
           <AssociationSet Name="FK_tbl_User_tbl_Address" Association="Self.FK_tbl_User_tbl_Address">
             <End Role="tbl_Address" EntitySet="tbl_Address" />
             <End Role="tbl_User" EntitySet="tbl_User" />
@@ -541,7 +514,33 @@
             <End Role="tbl_User" EntitySet="tbl_User" />
             <End Role="tbl_Transaction" EntitySet="tbl_Transaction" />
           </AssociationSet>
+          <EntitySet Name="tbl_City" EntityType="PantrDatabaseModel.tbl_City" />
+          <AssociationSet Name="FK_tbl_Address_tbl_City" Association="PantrDatabaseModel.FK_tbl_Address_tbl_City">
+            <End Role="tbl_City" EntitySet="tbl_City" />
+            <End Role="tbl_Address" EntitySet="tbl_Address" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="tbl_City">
+          <Key>
+            <PropertyRef Name="PK_City" />
+          </Key>
+          <Property Name="PK_City" Type="Int32" Nullable="false" />
+          <Property Name="Zip" Type="Int32" Nullable="false" />
+          <Property Name="City" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Address" Relationship="PantrDatabaseModel.FK_tbl_Address_tbl_City" FromRole="tbl_City" ToRole="tbl_Address" />
+        </EntityType>
+        <Association Name="FK_tbl_Address_tbl_City">
+          <End Type="PantrDatabaseModel.tbl_City" Role="tbl_City" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_Address" Role="tbl_Address" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_City">
+              <PropertyRef Name="PK_City" />
+            </Principal>
+            <Dependent Role="tbl_Address">
+              <PropertyRef Name="FK_City" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -554,15 +553,6 @@
                 <ScalarProperty Name="PK_Address" ColumnName="PK_Address" />
                 <ScalarProperty Name="FK_City" ColumnName="FK_City" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_City">
-            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_City">
-              <MappingFragment StoreEntitySet="tbl_City">
-                <ScalarProperty Name="PK_City" ColumnName="PK_City" />
-                <ScalarProperty Name="Zipcode" ColumnName="Zipcode" />
-                <ScalarProperty Name="City" ColumnName="City" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -639,6 +629,15 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="IsPanter" ColumnName="IsPanter" />
                 <ScalarProperty Name="FK_Address" ColumnName="FK_Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_City">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_City">
+              <MappingFragment StoreEntitySet="tbl_City">
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="PK_City" ColumnName="PK_City" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
