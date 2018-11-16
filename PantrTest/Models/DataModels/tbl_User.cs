@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PantrTest.Models
+namespace PantrTest.Models.DataModels
 {
     using System;
     using System.Collections.Generic;

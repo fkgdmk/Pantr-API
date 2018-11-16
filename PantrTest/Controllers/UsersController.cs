@@ -15,7 +15,7 @@ namespace PantrTest.Controllers
         public IEnumerable<tbl_User> Get()
         {
             List<tbl_User> users = new List<tbl_User>();
-            using (PantrEntities db = new PantrEntities())
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 users = db.tbl_User.Select(c => c).ToList();
             }
@@ -27,7 +27,7 @@ namespace PantrTest.Controllers
         public tbl_User Get(int id)
         {
             tbl_User user;
-            using (PantrEntities db = new PantrEntities())
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 user = db.tbl_User.FirstOrDefault(c => c.PK_User == id);
             }

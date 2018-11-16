@@ -194,6 +194,48 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataModels\Pantr.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pantr.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\Pantr.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\Pantr.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pantr.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_Address.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_City.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_Material.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_Post.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_PostQuantity.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_QuantityType.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_Report.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_Transaction.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_User.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +247,16 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Models\DataModels\Pantr.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Pantr.edmx</DependentUpon>
+      <LastGenOutput>Pantr.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\DataModels\Pantr.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Pantr.edmx</DependentUpon>
+      <LastGenOutput>Pantr.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -229,8 +281,16 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EntityDeploy Include="Models\DataModels\Pantr.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Pantr.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\DataModels\Pantr.edmx.diagram">
+      <DependentUpon>Pantr.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\PantrApi - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -254,7 +314,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\DataModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
