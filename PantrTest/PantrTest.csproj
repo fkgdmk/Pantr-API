@@ -237,6 +237,12 @@
     <Compile Include="Models\DataModels\tbl_User.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\AddressViewModel.cs" />
+    <Compile Include="Models\ViewModels\CityViewModel.cs" />
+    <Compile Include="Models\ViewModels\PostQuantityViewModel.cs" />
+    <Compile Include="Models\ViewModels\QuantityTypeViewModel.cs" />
+    <Compile Include="Models\ViewModels\ReportViewModel.cs" />
+    <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -314,7 +320,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
