@@ -7,31 +7,50 @@ using System.Web.Http;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using PantrTest.Models.DataModels;
+using PantrTest.Models.ViewModels;
 
 namespace PantrTest.Controllers
 {
 
     public class UsersController : ApiController
     {
-        public IEnumerable<tbl_User> Get()
+        public List<UserViewModel> Get()
         {
-            List<tbl_User> users = new List<tbl_User>();
+            List<tbl_User> usersFromDb = new List<tbl_User>();
+            List<UserViewModel> users = new List<UserViewModel>();
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                users = db.tbl_User.Select(c => c).ToList();
+                usersFromDb = db.tbl_User.Select(c => c).ToList();
+                foreach (var user in usersFromDb)
+                {
+                    users.Add(new UserViewModel()
+                    {
+                        Firstname = user.Firstname,
+                        Surname = user.Surname,
+                        Phone = user.Phone,
+                        Email = user.Email,
+                        IsPanter = (bool)user.IsPanter,
+                        Address = new AddressViewModel()
+                        {
+                            Address = user.tbl_Address.Address,
+                            City = new CityViewModel()
+                            {
+                                City = user.tbl_Address.tbl_City.City,
+                                Zip = user.tbl_Address.tbl_City.Zip
+                            }
+                        }
+                    });
+                }
             }
 
             return users;
         }
 
-        public tbl_User Get(int id)
+        public string Get(int id)
         {
-            tbl_User user = null;
-            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-            {
-                user = db.tbl_User.FirstOrDefault(c => c.PK_User == id);
-            }
-            return user;
+            string toReturn = "New user with id " + id;
+
+            return toReturn;
         }
 
         // POST api/values
