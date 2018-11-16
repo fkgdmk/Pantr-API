@@ -38,6 +38,7 @@ namespace PantrTest.Controllers
         // POST api/values
         public void Post([FromBody]string value)
         {
+            Console.WriteLine("Yoyo");
         }
 
         // PUT api/values/5
