@@ -29,7 +29,7 @@ namespace PantrTest.Controllers
                         Surname = user.Surname,
                         Phone = user.Phone,
                         Email = user.Email,
-                        IsPanter = (bool)user.IsPanter,
+                        IsPanter = (bool)user.IsPanter,     
                         Address = new AddressViewModel()
                         {
                             Address = user.tbl_Address.Address,

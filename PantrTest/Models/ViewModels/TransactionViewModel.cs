@@ -8,7 +8,7 @@ namespace PantrTest.Models.ViewModels
     public class TransactionViewModel
     {
         public PostViewModel Post { get; set; }
-        public string Panter { get; set; } //skift type
+        public UserViewModel Panter { get; set; }
         public bool Collected { get; set; }
         public bool Annulled { get; set; }
     }
