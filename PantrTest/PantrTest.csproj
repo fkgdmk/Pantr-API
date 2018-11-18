@@ -237,6 +237,7 @@
     <Compile Include="Models\DataModels\tbl_User.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ViewModels\AddressViewModel.cs" />
     <Compile Include="Models\ViewModels\CityViewModel.cs" />
     <Compile Include="Models\ViewModels\PostQuantityViewModel.cs" />
