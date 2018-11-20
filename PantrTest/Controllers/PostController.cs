@@ -26,6 +26,7 @@ namespace PantrTest.Controllers
                 var posts = (from post in db.tbl_Post
                              select new PostViewModel
                              {
+                                 Id = post.PK_Post,
                                  Material = new MaterialViewModel
                                  {
                                      Type = post.tbl_Material.Type
@@ -52,12 +53,12 @@ namespace PantrTest.Controllers
                                  {
                                      QuantityType = new QuantityTypeViewModel
                                      {
-                                         QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                           QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
                                      },
                                      Quantity = (int)post.tbl_PostQuantity.Quantity
                                  },
                                  Address = post.Address,
-                                 StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
+                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
                                  EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
@@ -97,6 +98,7 @@ namespace PantrTest.Controllers
 
                 tbl_Post post = new tbl_Post
                 {
+                    
                     tbl_Material = material,
                     tbl_PostQuantity = postQuantity,
                     tbl_User = giver,
@@ -125,8 +127,29 @@ namespace PantrTest.Controllers
         }
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody]string value)
         {
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                var ExistingPost = db.tbl_Post.FirstOrDefault(p => id == p.PK_Post);
+                
+                if(ExistingPost != null)
+                {
+                    ExistingPost.Claimed = true;
+
+                    db.SaveChanges();
+                    Console.WriteLine("Vi kom sgu til enden!");
+                
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+                return Ok();
+        
+
+            }
         }
 
         // DELETE api/<controller>/5

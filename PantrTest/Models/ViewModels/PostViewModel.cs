@@ -7,6 +7,7 @@ namespace PantrTest.Models.ViewModels
 {
     public class PostViewModel
     {
+        public int Id { get; set; }
         public MaterialViewModel Material { get; set; }
         public UserViewModel Giver { get; set; }
         public PostQuantityViewModel PostQuantity { get; set; }
