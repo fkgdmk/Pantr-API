@@ -23,7 +23,7 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                var posts = (from post in db.tbl_Post
+                List<PostViewModel> posts = (from post in db.tbl_Post
                              select new PostViewModel
                              {
                                  Id = post.PK_Post,
@@ -58,8 +58,8 @@ namespace PantrTest.Controllers
                                      Quantity = (int)post.tbl_PostQuantity.Quantity
                                  },
                                  Address = post.Address,
-                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
-                                 EndTime = (int)post.EndTime,
+                                 //StartTime = (int)post.StartTime,
+                                 //EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
                                  Date = (DateTime)post.Date
@@ -75,14 +75,55 @@ namespace PantrTest.Controllers
             return "value";
         }
 
+        [HttpGet]
+        [Route("api/post/getuserspost/{userId:int}")]
+        public PostViewModel GetUsersPost (int userId)
+        {
+            PantrDatabaseEntities db = new PantrDatabaseEntities();
+            tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
+            PostViewModel post = null;
+            if (postFromDb != null)
+            {
+                TimeSpan startTime = ConvertIntegerToTimeSpan((int)postFromDb.StartTime);
+                TimeSpan endTime = ConvertIntegerToTimeSpan((int)postFromDb.EndTime);
+                post = new PostViewModel()
+                {
+                    Id = postFromDb.PK_Post,
+                    Material = new MaterialViewModel
+                    {
+                        Type = postFromDb.tbl_Material.Type
+                    },
+                    PostQuantity = new PostQuantityViewModel
+                    {
+                        QuantityType = new QuantityTypeViewModel
+                        {
+                            QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                        },
+                        Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
+                    },
+                    Address = postFromDb.Address,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    Claimed = (bool)postFromDb.Claimed,
+                    Completed = (bool)postFromDb.Completed,
+                    Date = (DateTime)postFromDb.Date
+                };
+
+
+            }
+            return post;
+        }
+
         // POST api/<controller>
         [HttpPost]
         [Route("api/post")]
         public async Task Post(HttpRequestMessage request)
         {
             var jObject = await request.Content.ReadAsAsync<JObject>();
-
             Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
+
+            int startTime = ConvertTimeSpanToInteger(item.StartTime);
+            int endTime = ConvertTimeSpanToInteger(item.EndTime);
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
@@ -98,13 +139,12 @@ namespace PantrTest.Controllers
 
                 tbl_Post post = new tbl_Post
                 {
-                    
                     tbl_Material = material,
                     tbl_PostQuantity = postQuantity,
                     tbl_User = giver,
                     Address = item.Address,
-                    StartTime = item.StartTime,
-                    EndTime = item.EndTime,
+                    StartTime = startTime,
+                    EndTime = endTime,
                     Claimed = false,
                     Completed = false,
                     Date = DateTime.Today
@@ -115,15 +155,25 @@ namespace PantrTest.Controllers
             }
         }
 
-        public string ConvertIntegerToTimeSpan (int minutesAfterMidnight) {
+        public int ConvertTimeSpanToInteger (TimeSpan time)
+        {
+            int hours = time.Hours;
+            int minutes = time.Minutes;
+            int minutesAfterMidnight = (hours * 60) + minutes;
+            return minutesAfterMidnight;
+        }
+
+        public TimeSpan ConvertIntegerToTimeSpan (int minutesAfterMidnight) {
 
             int hours = minutesAfterMidnight / 60;
-            string midnight = new TimeSpan(hours, 0, 0).ToString();
+            int minutes = minutesAfterMidnight % 60;
+
+            TimeSpan time = new TimeSpan(hours, minutes, 0);
 
 
             //TimeSpan time = midnight.Add(hours)
 
-            return midnight;
+            return time;
         }
 
         // PUT api/<controller>/5
