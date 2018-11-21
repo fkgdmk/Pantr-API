@@ -46,11 +46,31 @@ namespace PantrTest.Controllers
             return users;
         }
 
-        public string Get(int id)
+        public UserViewModel Get(int id)
         {
-            string toReturn = "New user with id " + id;
-
-            return toReturn;
+            tbl_User foundUser = new tbl_User();
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                foundUser = db.tbl_User.Find(id);
+                UserViewModel user = new UserViewModel()
+                {
+                    Firstname = foundUser.Firstname,
+                    Surname = foundUser.Surname,
+                    Phone = foundUser.Phone,
+                    Email = foundUser.Email,
+                    IsPanter = (bool)foundUser.IsPanter,
+                    Address = new AddressViewModel()
+                    {
+                        Address = db.tbl_Address.Find(foundUser.FK_Address).Address,
+                        City = new CityViewModel()
+                        {
+                            City = db.tbl_City.Find(db.tbl_Address.Find(foundUser.FK_Address).FK_City).City,
+                            //Zip = db.tbl_City.Find(db.tbl_Address.Find(foundUser.FK_Address)).Zip
+                        }
+                    }
+                };
+                return user;
+            }
         }
 
         // POST api/values
