@@ -23,6 +23,7 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
+
                 var posts = (from post in db.tbl_Post
                              select new PostViewModel
                              {
