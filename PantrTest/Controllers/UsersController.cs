@@ -61,11 +61,11 @@ namespace PantrTest.Controllers
                     IsPanter = (bool)foundUser.IsPanter,
                     Address = new AddressViewModel()
                     {
-                        Address = db.tbl_Address.Find(foundUser.FK_Address).Address,
+                        Address = foundUser.tbl_Address.Address,
                         City = new CityViewModel()
                         {
-                            City = db.tbl_City.Find(db.tbl_Address.Find(foundUser.FK_Address).FK_City).City,
-                            //Zip = db.tbl_City.Find(db.tbl_Address.Find(foundUser.FK_Address)).Zip
+                            City = foundUser.tbl_Address.tbl_City.City,
+                            Zip = foundUser.tbl_Address.tbl_City.Zip
                         }
                     }
                 };
