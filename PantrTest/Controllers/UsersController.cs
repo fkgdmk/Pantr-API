@@ -46,11 +46,12 @@ namespace PantrTest.Controllers
             return users;
         }
 
+        // GET api/<controller>/5
         public UserViewModel Get(int id)
         {
-            tbl_User foundUser = new tbl_User();
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
+                tbl_User foundUser = new tbl_User();
                 foundUser = db.tbl_User.Find(id);
                 UserViewModel user = new UserViewModel()
                 {

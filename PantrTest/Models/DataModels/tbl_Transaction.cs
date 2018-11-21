@@ -20,7 +20,7 @@ namespace PantrTest.Models.DataModels
         public Nullable<bool> Collected { get; set; }
         public Nullable<bool> Annulled { get; set; }
     
-        public virtual tbl_Post tbl_Post { get; set; }
         public virtual tbl_User tbl_User { get; set; }
+        public virtual tbl_Post tbl_Post { get; set; }
     }
 }

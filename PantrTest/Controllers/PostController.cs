@@ -70,9 +70,36 @@ namespace PantrTest.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public PostViewModel Get(int id)
         {
-            return "value";
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                tbl_Post foundPost = new tbl_Post();
+                foundPost = db.tbl_Post.Find(id);
+                PostViewModel post = new PostViewModel()
+                {
+                    Giver = new UserViewModel()
+                    {
+                        Firstname = foundPost.tbl_User.Firstname,
+                        Surname = foundPost.tbl_User.Surname,
+                        Phone = foundPost.tbl_User.Phone,
+                        Email = foundPost.tbl_User.Email,
+                        IsPanter = (bool)foundPost.tbl_User.IsPanter,
+                        Address = new AddressViewModel()
+                        {
+                            Address = foundPost.tbl_User.tbl_Address.Address,
+                            City = new CityViewModel()
+                            {
+                                City = foundPost.tbl_User.tbl_Address.tbl_City.City,
+                                Zip = foundPost.tbl_User.tbl_Address.tbl_City.Zip
+                            },
+                        }
+                    },
+                };
+
+                return post;
+            }
+                
         }
 
         // POST api/<controller>
