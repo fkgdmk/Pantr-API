@@ -49,14 +49,14 @@ namespace PantrTest.Controllers
                                          }
                                      }
                                  },
-                                 PostQuantity = new PostQuantityViewModel
-                                 {
-                                     QuantityType = new QuantityTypeViewModel
-                                     {
-                                           QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                                     },
-                                     Quantity = (int)post.tbl_PostQuantity.Quantity
-                                 },
+                                 //PostQuantity = new PostQuantityViewModel
+                                 //{
+                                 //    QuantityType = new QuantityTypeViewModel
+                                 //    {
+                                 //          QuantityType = post.tbl_PostQuantity
+                                 //    },
+                                 //    Quantity = (int)post.tbl_PostQuantity.Quantity
+                                 //},
                                  Address = post.Address,
                                  //StartTime = (int)post.StartTime,
                                  //EndTime = (int)post.EndTime,
@@ -120,14 +120,14 @@ namespace PantrTest.Controllers
                     {
                         Type = postFromDb.tbl_Material.Type
                     },
-                    PostQuantity = new PostQuantityViewModel
-                    {
-                        QuantityType = new QuantityTypeViewModel
-                        {
-                            QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                        },
-                        Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
-                    },
+                    //PostQuantity = new PostQuantityViewModel
+                    //{
+                    //    QuantityType = new QuantityTypeViewModel
+                    //    {
+                    //        QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                    //    },
+                    //    Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
+                    //},
                     Address = postFromDb.Address,
                     StartTime = startTime,
                     EndTime = endTime,
@@ -167,7 +167,7 @@ namespace PantrTest.Controllers
                 tbl_Post post = new tbl_Post
                 {
                     tbl_Material = material,
-                    tbl_PostQuantity = postQuantity,
+                    //tbl_PostQuantity = postQuantity,
                     tbl_User = giver,
                     Address = item.Address,
                     StartTime = startTime,
