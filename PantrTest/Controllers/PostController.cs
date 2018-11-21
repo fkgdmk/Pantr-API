@@ -53,7 +53,7 @@ namespace PantrTest.Controllers
                                  {
                                      QuantityType = new QuantityTypeViewModel
                                      {
-                                           QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                         QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
                                      },
                                      Quantity = (int)post.tbl_PostQuantity.Quantity
                                  },
@@ -93,14 +93,24 @@ namespace PantrTest.Controllers
                                 City = foundPost.tbl_User.tbl_Address.tbl_City.City,
                                 Zip = foundPost.tbl_User.tbl_Address.tbl_City.Zip
                             },
-                        }
+                        },
                     },
+                    Material = new MaterialViewModel()
+                    {
+                        Type = foundPost.tbl_Material.Type
+                    },
+                    //StartTime = ConvertIntegerToTimeSpan((int)foundPost.StartTime),
+                    //EndTime = ConvertIntegerToTimeSpan((int)foundPost.EndTime),
+                    Claimed = (bool)foundPost.Claimed,
+                    Address = foundPost.Address,
+                    Date = (DateTime)foundPost.Date
+
                 };
 
                 return post;
             }
-                
         }
+
 
         // POST api/<controller>
         [HttpPost]
