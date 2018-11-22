@@ -24,6 +24,8 @@
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_Post" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_Transaction_tbl_Post" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_QuantityType" />
+        <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Login" Width="1.5" PointX="0.75" PointY="0.875" />
+        <AssociationConnector Association="PantrDatabaseModel.FK_tbl_User_tbl_Login" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

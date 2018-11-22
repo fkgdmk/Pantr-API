@@ -21,6 +21,14 @@
           <Property Name="Zip" Type="int" Nullable="false" />
           <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="tbl_Login">
+          <Key>
+            <PropertyRef Name="PK_Login" />
+          </Key>
+          <Property Name="PK_Login" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="tbl_Material">
           <Key>
             <PropertyRef Name="PK_Material" />
@@ -89,6 +97,7 @@
           <Property Name="Email" Type="nvarchar" MaxLength="50" />
           <Property Name="IsPanter" Type="bit" />
           <Property Name="FK_Address" Type="int" />
+          <Property Name="FK_Login" Type="int" />
         </EntityType>
         <Association Name="FK_tbl_Address_tbl_City">
           <End Role="tbl_City" Type="Self.tbl_City" Multiplicity="0..1" />
@@ -210,9 +219,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tbl_User_tbl_Login">
+          <End Role="tbl_Login" Type="Self.tbl_Login" Multiplicity="0..1" />
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Login">
+              <PropertyRef Name="PK_Login" />
+            </Principal>
+            <Dependent Role="tbl_User">
+              <PropertyRef Name="FK_Login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="PantrDatabaseModelStoreContainer">
           <EntitySet Name="tbl_Address" EntityType="Self.tbl_Address" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_City" EntityType="Self.tbl_City" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Login" EntityType="Self.tbl_Login" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PostQuantity" EntityType="Self.tbl_PostQuantity" Schema="dbo" store:Type="Tables" />
@@ -258,6 +280,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_tbl_User_tbl_Address" Association="Self.FK_tbl_User_tbl_Address">
             <End Role="tbl_Address" EntitySet="tbl_Address" />
+            <End Role="tbl_User" EntitySet="tbl_User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_User_tbl_Login" Association="Self.FK_tbl_User_tbl_Login">
+            <End Role="tbl_Login" EntitySet="tbl_Login" />
             <End Role="tbl_User" EntitySet="tbl_User" />
           </AssociationSet>
         </EntityContainer>
@@ -331,6 +357,8 @@
           <NavigationProperty Name="tbl_Report1" Relationship="Self.FK_tbl_Report_tbl_User1" FromRole="tbl_User" ToRole="tbl_Report" />
           <NavigationProperty Name="tbl_Transaction" Relationship="Self.FK_tbl_Transaction_tbl_User" FromRole="tbl_User" ToRole="tbl_Transaction" />
           <NavigationProperty Name="tbl_Post" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_User" FromRole="tbl_User" ToRole="tbl_Post" />
+          <Property Name="FK_Login" Type="Int32" />
+          <NavigationProperty Name="tbl_Login" Relationship="PantrDatabaseModel.FK_tbl_User_tbl_Login" FromRole="tbl_User" ToRole="tbl_Login" />
         </EntityType>
         <Association Name="FK_tbl_User_tbl_Address">
           <End Role="tbl_Address" Type="Self.tbl_Address" Multiplicity="0..1" />
@@ -429,6 +457,11 @@
           <AssociationSet Name="FK_tbl_PostQuantity_tbl_QuantityType" Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_QuantityType">
             <End Role="tbl_QuantityType" EntitySet="tbl_QuantityType" />
             <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
+          </AssociationSet>
+          <EntitySet Name="tbl_Login" EntityType="PantrDatabaseModel.tbl_Login" />
+          <AssociationSet Name="FK_tbl_User_tbl_Login" Association="PantrDatabaseModel.FK_tbl_User_tbl_Login">
+            <End Role="tbl_Login" EntitySet="tbl_Login" />
+            <End Role="tbl_User" EntitySet="tbl_User" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="tbl_City">
@@ -541,6 +574,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tbl_Login">
+          <Key>
+            <PropertyRef Name="PK_Login" />
+          </Key>
+          <Property Name="PK_Login" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_User" Relationship="PantrDatabaseModel.FK_tbl_User_tbl_Login" FromRole="tbl_Login" ToRole="tbl_User" />
+        </EntityType>
+        <Association Name="FK_tbl_User_tbl_Login">
+          <End Type="PantrDatabaseModel.tbl_Login" Role="tbl_Login" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_User" Role="tbl_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Login">
+              <PropertyRef Name="PK_Login" />
+            </Principal>
+            <Dependent Role="tbl_User">
+              <PropertyRef Name="FK_Login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -597,6 +651,7 @@
           <EntitySetMapping Name="tbl_User">
             <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_User">
               <MappingFragment StoreEntitySet="tbl_User">
+                <ScalarProperty Name="FK_Login" ColumnName="FK_Login" />
                 <ScalarProperty Name="PK_User" ColumnName="PK_User" />
                 <ScalarProperty Name="Firstname" ColumnName="Firstname" />
                 <ScalarProperty Name="Surname" ColumnName="Surname" />
@@ -638,6 +693,15 @@
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="FK_QuantityType" ColumnName="FK_QuantityType" />
                 <ScalarProperty Name="PK_PostQuantity" ColumnName="PK_PostQuantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Login">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Login">
+              <MappingFragment StoreEntitySet="tbl_Login">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PK_Login" ColumnName="PK_Login" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

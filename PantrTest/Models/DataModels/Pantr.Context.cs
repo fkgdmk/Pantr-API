@@ -34,5 +34,6 @@ namespace PantrTest.Models.DataModels
         public virtual DbSet<tbl_City> tbl_City { get; set; }
         public virtual DbSet<tbl_Post> tbl_Post { get; set; }
         public virtual DbSet<tbl_PostQuantity> tbl_PostQuantity { get; set; }
+        public virtual DbSet<tbl_Login> tbl_Login { get; set; }
     }
 }

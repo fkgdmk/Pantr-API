@@ -30,6 +30,7 @@ namespace PantrTest.Models.DataModels
         public string Email { get; set; }
         public Nullable<bool> IsPanter { get; set; }
         public Nullable<int> FK_Address { get; set; }
+        public Nullable<int> FK_Login { get; set; }
     
         public virtual tbl_Address tbl_Address { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -40,5 +41,6 @@ namespace PantrTest.Models.DataModels
         public virtual ICollection<tbl_Transaction> tbl_Transaction { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_Post> tbl_Post { get; set; }
+        public virtual tbl_Login tbl_Login { get; set; }
     }
 }
