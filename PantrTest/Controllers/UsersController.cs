@@ -75,9 +75,10 @@ namespace PantrTest.Controllers
         }
 
         // POST api/values
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post(UserViewModel register)
         {
-            Console.WriteLine("Yoyo");
+            var message = Request.CreateResponse(HttpStatusCode.Accepted, register);
+            return message;
         }
 
         // PUT api/values/5
