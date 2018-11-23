@@ -64,7 +64,7 @@ namespace PantrTest.Controllers
                                  //EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
-                                 Date = (DateTime)post.Date
+                                 //Date = (DateTime)post.Date
                              }).ToList();
 
                 return posts;
@@ -105,7 +105,7 @@ namespace PantrTest.Controllers
                     //EndTime = ConvertIntegerToTimeSpan((int)foundPost.EndTime),
                     Claimed = (bool)foundPost.Claimed,
                     Address = foundPost.Address,
-                    Date = (DateTime)foundPost.Date
+                    //Date = (DateTime)foundPost.Date
 
                 };
 
@@ -120,6 +120,7 @@ namespace PantrTest.Controllers
         {
             PantrDatabaseEntities db = new PantrDatabaseEntities();
             tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
+            DateTime date = (DateTime)postFromDb.Date;
             PostViewModel post = null;
             if (postFromDb != null)
             {
@@ -145,8 +146,8 @@ namespace PantrTest.Controllers
                     EndTime = endTime,
                     Claimed = (bool)postFromDb.Claimed,
                     Completed = (bool)postFromDb.Completed,
-                    Date = (DateTime)postFromDb.Date
-                };
+                    Date = date.ToString("dd/MM/yyyy")
+            };
 
 
             }

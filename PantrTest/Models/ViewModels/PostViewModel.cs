@@ -16,7 +16,7 @@ namespace PantrTest.Models.ViewModels
         public TimeSpan EndTime { get; set; }
         public bool Claimed { get; set; }
         public bool Completed { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
     }
 }
