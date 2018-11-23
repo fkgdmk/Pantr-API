@@ -23,12 +23,8 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-<<<<<<< HEAD
-
-                var posts = (from post in db.tbl_Post
-=======
                 List<PostViewModel> posts = (from post in db.tbl_Post
->>>>>>> a3e4640585bfb2489d0dc0535603abb22b332bbc
+
                              select new PostViewModel
                              {
                                  Id = post.PK_Post,
@@ -55,18 +51,17 @@ namespace PantrTest.Controllers
                                      }
                                  },
 
-                                 //PostQuantity = new PostQuantityViewModel
-                                 //{
-                                 //    QuantityType = new QuantityTypeViewModel
-                                 //    {
-                                 //          QuantityType = post.tbl_PostQuantity
-                                 //    },
-                                 //    Quantity = (int)post.tbl_PostQuantity.Quantity
-                                 //},
-
+                                // PostQuantity = new PostQuantityViewModel
+                                // {
+                                  //   QuantityType = new QuantityTypeViewModel
+                                   //  {
+                                     //      QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                  //   },
+                                    //   Quantity = (int)post.tbl_PostQuantity.Quantity
+                                // },
                                  Address = post.Address,
-                                 //StartTime = (int)post.StartTime,
-                                 //EndTime = (int)post.EndTime,
+                                 StartTime = (int) post.StartTime,
+                                 EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
                                  //Date = (DateTime)post.Date
