@@ -8,7 +8,7 @@ namespace PantrTest.Models
     public class Item
     {
         public string Giver { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public int Quanity { get; set; }
