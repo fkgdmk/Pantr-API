@@ -23,8 +23,7 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                List<PostViewModel> posts = (from post in db.tbl_Post
-
+                List<PostViewModel> posts = (from post in db.tbl_Post  
                              select new PostViewModel
                              {
                                  Id = post.PK_Post,
@@ -60,8 +59,8 @@ namespace PantrTest.Controllers
                                     //   Quantity = (int)post.tbl_PostQuantity.Quantity
                                 // },
                                  Address = post.Address,
-                                 StartTime = (int) post.StartTime,
-                                 EndTime = (int)post.EndTime,
+                                 StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
+                                 EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
                                  //Date = (DateTime)post.Date
