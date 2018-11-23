@@ -50,16 +50,16 @@ namespace PantrTest.Controllers
                                          }
                                      }
                                  },
-                                 PostQuantity = new PostQuantityViewModel
-                                 {
-                                     QuantityType = new QuantityTypeViewModel
-                                     {
-                                           QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                                     },
-                                     Quantity = (int)post.tbl_PostQuantity.Quantity
-                                 },
+                                // PostQuantity = new PostQuantityViewModel
+                                // {
+                                  //   QuantityType = new QuantityTypeViewModel
+                                   //  {
+                                     //      QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                  //   },
+                                    //   Quantity = (int)post.tbl_PostQuantity.Quantity
+                                // },
                                  Address = post.Address,
-                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
+                                 StartTime = (int)post.StartTime,
                                  EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
