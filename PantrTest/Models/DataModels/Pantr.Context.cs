@@ -27,12 +27,13 @@ namespace PantrTest.Models.DataModels
     
         public virtual DbSet<tbl_Address> tbl_Address { get; set; }
         public virtual DbSet<tbl_Material> tbl_Material { get; set; }
-        public virtual DbSet<tbl_Post> tbl_Post { get; set; }
-        public virtual DbSet<tbl_PostQuantity> tbl_PostQuantity { get; set; }
         public virtual DbSet<tbl_QuantityType> tbl_QuantityType { get; set; }
         public virtual DbSet<tbl_Report> tbl_Report { get; set; }
         public virtual DbSet<tbl_Transaction> tbl_Transaction { get; set; }
         public virtual DbSet<tbl_User> tbl_User { get; set; }
         public virtual DbSet<tbl_City> tbl_City { get; set; }
+        public virtual DbSet<tbl_Post> tbl_Post { get; set; }
+        public virtual DbSet<tbl_PostQuantity> tbl_PostQuantity { get; set; }
+        public virtual DbSet<tbl_Login> tbl_Login { get; set; }
     }
 }

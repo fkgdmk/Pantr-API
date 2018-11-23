@@ -21,6 +21,14 @@
           <Property Name="Zip" Type="int" Nullable="false" />
           <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="tbl_Login">
+          <Key>
+            <PropertyRef Name="PK_Login" />
+          </Key>
+          <Property Name="PK_Login" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="tbl_Material">
           <Key>
             <PropertyRef Name="PK_Material" />
@@ -35,7 +43,6 @@
           <Property Name="PK_Post" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FK_Giver" Type="int" />
           <Property Name="FK_Material" Type="int" />
-          <Property Name="FK_PostQuantity" Type="int" />
           <Property Name="StartTime" Type="int" />
           <Property Name="EndTime" Type="int" />
           <Property Name="Claimed" Type="bit" />
@@ -50,6 +57,7 @@
           <Property Name="PK_PostQuantity" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FK_QuantityType" Type="int" />
           <Property Name="Quantity" Type="int" />
+          <Property Name="FK_Post" Type="int" />
         </EntityType>
         <EntityType Name="tbl_QuantityType">
           <Key>
@@ -89,6 +97,7 @@
           <Property Name="Email" Type="nvarchar" MaxLength="50" />
           <Property Name="IsPanter" Type="bit" />
           <Property Name="FK_Address" Type="int" />
+          <Property Name="FK_Login" Type="int" />
         </EntityType>
         <Association Name="FK_tbl_Address_tbl_City">
           <End Role="tbl_City" Type="Self.tbl_City" Multiplicity="0..1" />
@@ -114,18 +123,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tbl_Post_tbl_PostQuantity">
-          <End Role="tbl_PostQuantity" Type="Self.tbl_PostQuantity" Multiplicity="0..1" />
-          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_PostQuantity">
-              <PropertyRef Name="PK_PostQuantity" />
-            </Principal>
-            <Dependent Role="tbl_Post">
-              <PropertyRef Name="FK_PostQuantity" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_tbl_Post_tbl_User">
           <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="0..1" />
           <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="*" />
@@ -135,6 +132,18 @@
             </Principal>
             <Dependent Role="tbl_Post">
               <PropertyRef Name="FK_Giver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PostQuantity_tbl_Post">
+          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="0..1" />
+          <End Role="tbl_PostQuantity" Type="Self.tbl_PostQuantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Post">
+              <PropertyRef Name="PK_Post" />
+            </Principal>
+            <Dependent Role="tbl_PostQuantity">
+              <PropertyRef Name="FK_Post" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -210,9 +219,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tbl_User_tbl_Login">
+          <End Role="tbl_Login" Type="Self.tbl_Login" Multiplicity="0..1" />
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Login">
+              <PropertyRef Name="PK_Login" />
+            </Principal>
+            <Dependent Role="tbl_User">
+              <PropertyRef Name="FK_Login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="PantrDatabaseModelStoreContainer">
           <EntitySet Name="tbl_Address" EntityType="Self.tbl_Address" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_City" EntityType="Self.tbl_City" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Login" EntityType="Self.tbl_Login" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PostQuantity" EntityType="Self.tbl_PostQuantity" Schema="dbo" store:Type="Tables" />
@@ -228,13 +250,13 @@
             <End Role="tbl_Material" EntitySet="tbl_Material" />
             <End Role="tbl_Post" EntitySet="tbl_Post" />
           </AssociationSet>
-          <AssociationSet Name="FK_tbl_Post_tbl_PostQuantity" Association="Self.FK_tbl_Post_tbl_PostQuantity">
-            <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
-            <End Role="tbl_Post" EntitySet="tbl_Post" />
-          </AssociationSet>
           <AssociationSet Name="FK_tbl_Post_tbl_User" Association="Self.FK_tbl_Post_tbl_User">
             <End Role="tbl_User" EntitySet="tbl_User" />
             <End Role="tbl_Post" EntitySet="tbl_Post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PostQuantity_tbl_Post" Association="Self.FK_tbl_PostQuantity_tbl_Post">
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+            <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
           </AssociationSet>
           <AssociationSet Name="FK_tbl_PostQuantity_tbl_QuantityType" Association="Self.FK_tbl_PostQuantity_tbl_QuantityType">
             <End Role="tbl_QuantityType" EntitySet="tbl_QuantityType" />
@@ -260,6 +282,10 @@
             <End Role="tbl_Address" EntitySet="tbl_Address" />
             <End Role="tbl_User" EntitySet="tbl_User" />
           </AssociationSet>
+          <AssociationSet Name="FK_tbl_User_tbl_Login" Association="Self.FK_tbl_User_tbl_Login">
+            <End Role="tbl_Login" EntitySet="tbl_Login" />
+            <End Role="tbl_User" EntitySet="tbl_User" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -281,36 +307,7 @@
           </Key>
           <Property Name="PK_Material" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="tbl_Post" Relationship="Self.FK_tbl_Post_tbl_Material" FromRole="tbl_Material" ToRole="tbl_Post" />
-        </EntityType>
-        <EntityType Name="tbl_Post">
-          <Key>
-            <PropertyRef Name="PK_Post" />
-          </Key>
-          <Property Name="PK_Post" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FK_Giver" Type="Int32" />
-          <Property Name="FK_Material" Type="Int32" />
-          <Property Name="FK_PostQuantity" Type="Int32" />
-          <Property Name="StartTime" Type="Int32" />
-          <Property Name="EndTime" Type="Int32" />
-          <Property Name="Claimed" Type="Boolean" />
-          <Property Name="Completed" Type="Boolean" />
-          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Date" Type="DateTime" Precision="7" />
-          <NavigationProperty Name="tbl_Material" Relationship="Self.FK_tbl_Post_tbl_Material" FromRole="tbl_Post" ToRole="tbl_Material" />
-          <NavigationProperty Name="tbl_PostQuantity" Relationship="Self.FK_tbl_Post_tbl_PostQuantity" FromRole="tbl_Post" ToRole="tbl_PostQuantity" />
-          <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_Post_tbl_User" FromRole="tbl_Post" ToRole="tbl_User" />
-          <NavigationProperty Name="tbl_Transaction" Relationship="Self.FK_tbl_Transaction_tbl_Post" FromRole="tbl_Post" ToRole="tbl_Transaction" />
-        </EntityType>
-        <EntityType Name="tbl_PostQuantity">
-          <Key>
-            <PropertyRef Name="PK_PostQuantity" />
-          </Key>
-          <Property Name="PK_PostQuantity" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FK_QuantityType" Type="Int32" />
-          <Property Name="Quantity" Type="Int32" />
-          <NavigationProperty Name="tbl_Post" Relationship="Self.FK_tbl_Post_tbl_PostQuantity" FromRole="tbl_PostQuantity" ToRole="tbl_Post" />
-          <NavigationProperty Name="tbl_QuantityType" Relationship="Self.FK_tbl_PostQuantity_tbl_QuantityType" FromRole="tbl_PostQuantity" ToRole="tbl_QuantityType" />
+          <NavigationProperty Name="tbl_Post" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_Material" FromRole="tbl_Material" ToRole="tbl_Post" />
         </EntityType>
         <EntityType Name="tbl_QuantityType">
           <Key>
@@ -318,7 +315,7 @@
           </Key>
           <Property Name="PK_QuantityType" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="QuantityType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tbl_PostQuantity" Relationship="Self.FK_tbl_PostQuantity_tbl_QuantityType" FromRole="tbl_QuantityType" ToRole="tbl_PostQuantity" />
+          <NavigationProperty Name="tbl_PostQuantity" Relationship="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_QuantityType" FromRole="tbl_QuantityType" ToRole="tbl_PostQuantity" />
         </EntityType>
         <EntityType Name="tbl_Report">
           <Key>
@@ -341,8 +338,8 @@
           <Property Name="FK_Panter" Type="Int32" />
           <Property Name="Collected" Type="Boolean" />
           <Property Name="Annulled" Type="Boolean" />
-          <NavigationProperty Name="tbl_Post" Relationship="Self.FK_tbl_Transaction_tbl_Post" FromRole="tbl_Transaction" ToRole="tbl_Post" />
           <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_Transaction_tbl_User" FromRole="tbl_Transaction" ToRole="tbl_User" />
+          <NavigationProperty Name="tbl_Post" Relationship="PantrDatabaseModel.FK_tbl_Transaction_tbl_Post" FromRole="tbl_Transaction" ToRole="tbl_Post" />
         </EntityType>
         <EntityType Name="tbl_User">
           <Key>
@@ -356,10 +353,12 @@
           <Property Name="IsPanter" Type="Boolean" />
           <Property Name="FK_Address" Type="Int32" />
           <NavigationProperty Name="tbl_Address" Relationship="Self.FK_tbl_User_tbl_Address" FromRole="tbl_User" ToRole="tbl_Address" />
-          <NavigationProperty Name="tbl_Post" Relationship="Self.FK_tbl_Post_tbl_User" FromRole="tbl_User" ToRole="tbl_Post" />
           <NavigationProperty Name="tbl_Report" Relationship="Self.FK_tbl_Report_tbl_User" FromRole="tbl_User" ToRole="tbl_Report" />
           <NavigationProperty Name="tbl_Report1" Relationship="Self.FK_tbl_Report_tbl_User1" FromRole="tbl_User" ToRole="tbl_Report" />
           <NavigationProperty Name="tbl_Transaction" Relationship="Self.FK_tbl_Transaction_tbl_User" FromRole="tbl_User" ToRole="tbl_Transaction" />
+          <NavigationProperty Name="tbl_Post" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_User" FromRole="tbl_User" ToRole="tbl_Post" />
+          <Property Name="FK_Login" Type="Int32" />
+          <NavigationProperty Name="tbl_Login" Relationship="PantrDatabaseModel.FK_tbl_User_tbl_Login" FromRole="tbl_User" ToRole="tbl_Login" />
         </EntityType>
         <Association Name="FK_tbl_User_tbl_Address">
           <End Role="tbl_Address" Type="Self.tbl_Address" Multiplicity="0..1" />
@@ -370,66 +369,6 @@
             </Principal>
             <Dependent Role="tbl_User">
               <PropertyRef Name="FK_Address" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_Post_tbl_Material">
-          <End Role="tbl_Material" Type="Self.tbl_Material" Multiplicity="0..1" />
-          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Material">
-              <PropertyRef Name="PK_Material" />
-            </Principal>
-            <Dependent Role="tbl_Post">
-              <PropertyRef Name="FK_Material" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_Post_tbl_PostQuantity">
-          <End Role="tbl_PostQuantity" Type="Self.tbl_PostQuantity" Multiplicity="0..1" />
-          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_PostQuantity">
-              <PropertyRef Name="PK_PostQuantity" />
-            </Principal>
-            <Dependent Role="tbl_Post">
-              <PropertyRef Name="FK_PostQuantity" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_Post_tbl_User">
-          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="0..1" />
-          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_User">
-              <PropertyRef Name="PK_User" />
-            </Principal>
-            <Dependent Role="tbl_Post">
-              <PropertyRef Name="FK_Giver" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_Transaction_tbl_Post">
-          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="0..1" />
-          <End Role="tbl_Transaction" Type="Self.tbl_Transaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Post">
-              <PropertyRef Name="PK_Post" />
-            </Principal>
-            <Dependent Role="tbl_Transaction">
-              <PropertyRef Name="FK_Post" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_tbl_PostQuantity_tbl_QuantityType">
-          <End Role="tbl_QuantityType" Type="Self.tbl_QuantityType" Multiplicity="0..1" />
-          <End Role="tbl_PostQuantity" Type="Self.tbl_PostQuantity" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_QuantityType">
-              <PropertyRef Name="PK_QuantityType" />
-            </Principal>
-            <Dependent Role="tbl_PostQuantity">
-              <PropertyRef Name="FK_QuantityType" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -472,8 +411,6 @@
         <EntityContainer Name="PantrDatabaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tbl_Address" EntityType="Self.tbl_Address" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" />
-          <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" />
-          <EntitySet Name="tbl_PostQuantity" EntityType="Self.tbl_PostQuantity" />
           <EntitySet Name="tbl_QuantityType" EntityType="Self.tbl_QuantityType" />
           <EntitySet Name="tbl_Report" EntityType="Self.tbl_Report" />
           <EntitySet Name="tbl_Transaction" EntityType="Self.tbl_Transaction" />
@@ -481,26 +418,6 @@
           <AssociationSet Name="FK_tbl_User_tbl_Address" Association="Self.FK_tbl_User_tbl_Address">
             <End Role="tbl_Address" EntitySet="tbl_Address" />
             <End Role="tbl_User" EntitySet="tbl_User" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_Post_tbl_Material" Association="Self.FK_tbl_Post_tbl_Material">
-            <End Role="tbl_Material" EntitySet="tbl_Material" />
-            <End Role="tbl_Post" EntitySet="tbl_Post" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_Post_tbl_PostQuantity" Association="Self.FK_tbl_Post_tbl_PostQuantity">
-            <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
-            <End Role="tbl_Post" EntitySet="tbl_Post" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_Post_tbl_User" Association="Self.FK_tbl_Post_tbl_User">
-            <End Role="tbl_User" EntitySet="tbl_User" />
-            <End Role="tbl_Post" EntitySet="tbl_Post" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_Transaction_tbl_Post" Association="Self.FK_tbl_Transaction_tbl_Post">
-            <End Role="tbl_Post" EntitySet="tbl_Post" />
-            <End Role="tbl_Transaction" EntitySet="tbl_Transaction" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_PostQuantity_tbl_QuantityType" Association="Self.FK_tbl_PostQuantity_tbl_QuantityType">
-            <End Role="tbl_QuantityType" EntitySet="tbl_QuantityType" />
-            <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
           </AssociationSet>
           <AssociationSet Name="FK_tbl_Report_tbl_User" Association="Self.FK_tbl_Report_tbl_User">
             <End Role="tbl_User" EntitySet="tbl_User" />
@@ -518,6 +435,33 @@
           <AssociationSet Name="FK_tbl_Address_tbl_City" Association="PantrDatabaseModel.FK_tbl_Address_tbl_City">
             <End Role="tbl_City" EntitySet="tbl_City" />
             <End Role="tbl_Address" EntitySet="tbl_Address" />
+          </AssociationSet>
+          <EntitySet Name="tbl_Post" EntityType="PantrDatabaseModel.tbl_Post" />
+          <EntitySet Name="tbl_PostQuantity" EntityType="PantrDatabaseModel.tbl_PostQuantity" />
+          <AssociationSet Name="FK_tbl_Post_tbl_Material" Association="PantrDatabaseModel.FK_tbl_Post_tbl_Material">
+            <End Role="tbl_Material" EntitySet="tbl_Material" />
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Post_tbl_User" Association="PantrDatabaseModel.FK_tbl_Post_tbl_User">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PostQuantity_tbl_Post" Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_Post">
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+            <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Transaction_tbl_Post" Association="PantrDatabaseModel.FK_tbl_Transaction_tbl_Post">
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+            <End Role="tbl_Transaction" EntitySet="tbl_Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_PostQuantity_tbl_QuantityType" Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_QuantityType">
+            <End Role="tbl_QuantityType" EntitySet="tbl_QuantityType" />
+            <End Role="tbl_PostQuantity" EntitySet="tbl_PostQuantity" />
+          </AssociationSet>
+          <EntitySet Name="tbl_Login" EntityType="PantrDatabaseModel.tbl_Login" />
+          <AssociationSet Name="FK_tbl_User_tbl_Login" Association="PantrDatabaseModel.FK_tbl_User_tbl_Login">
+            <End Role="tbl_Login" EntitySet="tbl_Login" />
+            <End Role="tbl_User" EntitySet="tbl_User" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="tbl_City">
@@ -541,6 +485,116 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tbl_Post">
+          <Key>
+            <PropertyRef Name="PK_Post" />
+          </Key>
+          <Property Name="PK_Post" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_Giver" Type="Int32" />
+          <Property Name="FK_Material" Type="Int32" />
+          <Property Name="StartTime" Type="Int32" />
+          <Property Name="EndTime" Type="Int32" />
+          <Property Name="Claimed" Type="Boolean" />
+          <Property Name="Completed" Type="Boolean" />
+          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Date" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="tbl_Material" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_Material" FromRole="tbl_Post" ToRole="tbl_Material" />
+          <NavigationProperty Name="tbl_User" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_User" FromRole="tbl_Post" ToRole="tbl_User" />
+          <NavigationProperty Name="tbl_PostQuantity" Relationship="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_Post" FromRole="tbl_Post" ToRole="tbl_PostQuantity" />
+          <NavigationProperty Name="tbl_Transaction" Relationship="PantrDatabaseModel.FK_tbl_Transaction_tbl_Post" FromRole="tbl_Post" ToRole="tbl_Transaction" />
+        </EntityType>
+        <EntityType Name="tbl_PostQuantity">
+          <Key>
+            <PropertyRef Name="PK_PostQuantity" />
+          </Key>
+          <Property Name="PK_PostQuantity" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_QuantityType" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="FK_Post" Type="Int32" />
+          <NavigationProperty Name="tbl_Post" Relationship="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_Post" FromRole="tbl_PostQuantity" ToRole="tbl_Post" />
+          <NavigationProperty Name="tbl_QuantityType" Relationship="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_QuantityType" FromRole="tbl_PostQuantity" ToRole="tbl_QuantityType" />
+        </EntityType>
+        <Association Name="FK_tbl_Post_tbl_Material">
+          <End Type="PantrDatabaseModel.tbl_Material" Role="tbl_Material" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_Post" Role="tbl_Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Material">
+              <PropertyRef Name="PK_Material" />
+            </Principal>
+            <Dependent Role="tbl_Post">
+              <PropertyRef Name="FK_Material" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Post_tbl_User">
+          <End Type="PantrDatabaseModel.tbl_User" Role="tbl_User" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_Post" Role="tbl_Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="PK_User" />
+            </Principal>
+            <Dependent Role="tbl_Post">
+              <PropertyRef Name="FK_Giver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PostQuantity_tbl_Post">
+          <End Type="PantrDatabaseModel.tbl_Post" Role="tbl_Post" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_PostQuantity" Role="tbl_PostQuantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Post">
+              <PropertyRef Name="PK_Post" />
+            </Principal>
+            <Dependent Role="tbl_PostQuantity">
+              <PropertyRef Name="FK_Post" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Transaction_tbl_Post">
+          <End Type="PantrDatabaseModel.tbl_Post" Role="tbl_Post" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_Transaction" Role="tbl_Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Post">
+              <PropertyRef Name="PK_Post" />
+            </Principal>
+            <Dependent Role="tbl_Transaction">
+              <PropertyRef Name="FK_Post" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_PostQuantity_tbl_QuantityType">
+          <End Type="PantrDatabaseModel.tbl_QuantityType" Role="tbl_QuantityType" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_PostQuantity" Role="tbl_PostQuantity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_QuantityType">
+              <PropertyRef Name="PK_QuantityType" />
+            </Principal>
+            <Dependent Role="tbl_PostQuantity">
+              <PropertyRef Name="FK_QuantityType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_Login">
+          <Key>
+            <PropertyRef Name="PK_Login" />
+          </Key>
+          <Property Name="PK_Login" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_User" Relationship="PantrDatabaseModel.FK_tbl_User_tbl_Login" FromRole="tbl_Login" ToRole="tbl_User" />
+        </EntityType>
+        <Association Name="FK_tbl_User_tbl_Login">
+          <End Type="PantrDatabaseModel.tbl_Login" Role="tbl_Login" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_User" Role="tbl_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Login">
+              <PropertyRef Name="PK_Login" />
+            </Principal>
+            <Dependent Role="tbl_User">
+              <PropertyRef Name="FK_Login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -561,31 +615,6 @@
               <MappingFragment StoreEntitySet="tbl_Material">
                 <ScalarProperty Name="PK_Material" ColumnName="PK_Material" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Post">
-            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Post">
-              <MappingFragment StoreEntitySet="tbl_Post">
-                <ScalarProperty Name="PK_Post" ColumnName="PK_Post" />
-                <ScalarProperty Name="FK_Giver" ColumnName="FK_Giver" />
-                <ScalarProperty Name="FK_Material" ColumnName="FK_Material" />
-                <ScalarProperty Name="FK_PostQuantity" ColumnName="FK_PostQuantity" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="Claimed" ColumnName="Claimed" />
-                <ScalarProperty Name="Completed" ColumnName="Completed" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_PostQuantity">
-            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_PostQuantity">
-              <MappingFragment StoreEntitySet="tbl_PostQuantity">
-                <ScalarProperty Name="PK_PostQuantity" ColumnName="PK_PostQuantity" />
-                <ScalarProperty Name="FK_QuantityType" ColumnName="FK_QuantityType" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -622,6 +651,7 @@
           <EntitySetMapping Name="tbl_User">
             <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_User">
               <MappingFragment StoreEntitySet="tbl_User">
+                <ScalarProperty Name="FK_Login" ColumnName="FK_Login" />
                 <ScalarProperty Name="PK_User" ColumnName="PK_User" />
                 <ScalarProperty Name="Firstname" ColumnName="Firstname" />
                 <ScalarProperty Name="Surname" ColumnName="Surname" />
@@ -638,6 +668,40 @@
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="Zip" ColumnName="Zip" />
                 <ScalarProperty Name="PK_City" ColumnName="PK_City" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Post">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Post">
+              <MappingFragment StoreEntitySet="tbl_Post">
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Completed" ColumnName="Completed" />
+                <ScalarProperty Name="Claimed" ColumnName="Claimed" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="FK_Material" ColumnName="FK_Material" />
+                <ScalarProperty Name="FK_Giver" ColumnName="FK_Giver" />
+                <ScalarProperty Name="PK_Post" ColumnName="PK_Post" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PostQuantity">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_PostQuantity">
+              <MappingFragment StoreEntitySet="tbl_PostQuantity">
+                <ScalarProperty Name="FK_Post" ColumnName="FK_Post" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="FK_QuantityType" ColumnName="FK_QuantityType" />
+                <ScalarProperty Name="PK_PostQuantity" ColumnName="PK_PostQuantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Login">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Login">
+              <MappingFragment StoreEntitySet="tbl_Login">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PK_Login" ColumnName="PK_Login" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
