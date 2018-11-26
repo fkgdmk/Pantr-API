@@ -17,58 +17,58 @@ namespace PantrTest.Controllers
 {
     public class PostController : ApiController
     {
-        //// GET api/<controller>
-        //[Route("api/posts")]
-        //public List<PostViewModel> Get()
-        //{
-        //    using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-        //    {
-        //        List<PostViewModel> posts = (from post in db.tbl_Post  
-        //                     select new PostViewModel
-        //                     {
-        //                         Id = post.PK_Post,
-        //                         Material = new MaterialViewModel
-        //                         {
-        //                             Type = post.tbl_Material.Type
+        // GET api/<controller>
+        [Route("api/posts")]
+        public List<PostViewModel> Get()
+        {
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                List<PostViewModel> posts = (from post in db.tbl_Post  
+                             select new PostViewModel
+                             {
+                                 Id = post.PK_Post,
+                                 Material = new MaterialViewModel
+                                 {
+                                     Type = post.tbl_Material.Type
 
-        //                         },
-        //                         Giver = new UserViewModel
-        //                         {
-        //                             Firstname = post.tbl_User.Firstname,
-        //                             Surname = post.tbl_User.Surname,
-        //                             Phone = post.tbl_User.Phone,
-        //                             Email = post.tbl_User.Email,
-        //                             IsPanter = (bool)post.tbl_User.IsPanter,
-        //                             Address = new AddressViewModel()
-        //                             {
-        //                                 Address = post.tbl_User.tbl_Address.Address,
-        //                                 City = new CityViewModel()
-        //                                 {
-        //                                     City = post.tbl_User.tbl_Address.tbl_City.City,
-        //                                     Zip = post.tbl_User.tbl_Address.tbl_City.Zip
-        //                                 }
-        //                             }
-        //                         },
+                                 },
+                                 Giver = new UserViewModel
+                                 {
+                                     Firstname = post.tbl_User.Firstname,
+                                     Surname = post.tbl_User.Surname,
+                                     Phone = post.tbl_User.Phone,
+                                     Email = post.tbl_User.Email,
+                                     IsPanter = (bool)post.tbl_User.IsPanter,
+                                     Address = new AddressViewModel()
+                                     {
+                                         Address = post.tbl_User.tbl_Address.Address,
+                                         City = new CityViewModel()
+                                         {
+                                             City = post.tbl_User.tbl_Address.tbl_City.City,
+                                             Zip = post.tbl_User.tbl_Address.tbl_City.Zip
+                                         }
+                                     }
+                                 },
 
-        //                        // PostQuantity = new PostQuantityViewModel
-        //                        // {
-        //                          //   QuantityType = new QuantityTypeViewModel
-        //                           //  {
-        //                             //      QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
-        //                          //   },
-        //                            //   Quantity = (int)post.tbl_PostQuantity.Quantity
-        //                        // },
-        //                         Address = post.Address,
-        //                         StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
-        //                         EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
-        //                         Claimed = (bool)post.Claimed,
-        //                         Completed = (bool)post.Completed,
-        //                         //Date = (DateTime)post.Date
-        //                     }).ToList();
+                                // PostQuantity = new PostQuantityViewModel
+                                // {
+                                  //   QuantityType = new QuantityTypeViewModel
+                                   //  {
+                                     //      QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                  //   },
+                                    //   Quantity = (int)post.tbl_PostQuantity.Quantity
+                                // },
+                                 Address = post.Address,
+                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
+                                 //EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
+                                 Claimed = (bool)post.Claimed,
+                                 Completed = (bool)post.Completed,
+                                 //Date = (DateTime)post.Date
+                             }).ToList();
 
-        //        return posts;
-        //    }
-        //}
+                return posts;
+            }
+        }
 
         // GET api/<controller>/5
         public PostViewModel Get(int id)
@@ -113,45 +113,45 @@ namespace PantrTest.Controllers
         }
 
 
-        //[HttpGet]
-        //[Route("api/post/getuserspost/{userId:int}")]
-        //public PostViewModel GetUsersPost(int userId)
-        //{
-        //    PantrDatabaseEntities db = new PantrDatabaseEntities();
-        //    tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
-        //    DateTime date = (DateTime)postFromDb.Date;
-        //    PostViewModel post = null;
-        //    if (postFromDb != null)
-        //    {
-        //        TimeSpan startTime = ConvertIntegerToTimeSpan((int)postFromDb.StartTime);
-        //        TimeSpan endTime = ConvertIntegerToTimeSpan((int)postFromDb.EndTime);
-        //        post = new PostViewModel()
-        //        {
-        //            Id = postFromDb.PK_Post,
-        //            Material = new MaterialViewModel
-        //            {
-        //                Type = postFromDb.tbl_Material.Type
-        //            },
-        //            PostQuantity = new PostQuantityViewModel
-        //            {
-        //                QuantityType = new QuantityTypeViewModel
-        //                {
-        //                    QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
-        //                },
-        //                Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
-        //            },
-        //            Address = postFromDb.Address,
-        //            StartTime = startTime,
-        //            EndTime = endTime,
-        //            Claimed = (bool)postFromDb.Claimed,
-        //            Completed = (bool)postFromDb.Completed,
-        //            Date = date.ToString("dd/MM/yyyy")
-        //        };
+        [HttpGet]
+        [Route("api/post/getuserspost/{userId:int}")]
+        public PostViewModel GetUsersPost(int userId)
+        {
+            PantrDatabaseEntities db = new PantrDatabaseEntities();
+            tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
+            DateTime date = (DateTime)postFromDb.Date;
+            PostViewModel post = null;
+            if (postFromDb != null)
+            {
+                TimeSpan startTime = ConvertIntegerToTimeSpan((int)postFromDb.StartTime);
+                TimeSpan endTime = ConvertIntegerToTimeSpan((int)postFromDb.EndTime);
+                post = new PostViewModel()
+                {
+                    Id = postFromDb.PK_Post,
+                    Material = new MaterialViewModel
+                    {
+                        Type = postFromDb.tbl_Material.Type
+                    },
+                    PostQuantity = new PostQuantityViewModel
+                    {
+                        QuantityType = new QuantityTypeViewModel
+                        {
+                            //QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                        },
+                        //Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
+                    },
+                    Address = postFromDb.Address,
+                    //StartTime = startTime,
+                    //EndTime = endTime,
+                    Claimed = (bool)postFromDb.Claimed,
+                    Completed = (bool)postFromDb.Completed,
+                    Date = date.ToString("dd/MM/yyyy")
+                };
 
 
-        //    }
-        //    return post;
-        //}
+            }
+            return post;
+        }
 
 
         // POST api/<controller>

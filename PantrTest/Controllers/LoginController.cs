@@ -29,19 +29,21 @@ namespace PantrTest.Controllers
         }
 
         // POST api/<controller>
-        public HttpResponseMessage Post(StringContent login)
+        public async Task<HttpResponseMessage> Post(HttpRequestMessage data)
         {
+            var jObject = await data.Content.ReadAsAsync<JObject>();
+            LoginViewModel login = JsonConvert.DeserializeObject<LoginViewModel>(jObject.ToString());
             HttpResponseMessage message = null;
-            //using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-            //{
-            //    var userFromDb = db.tbl_Login.FirstOrDefault(c => c.Username == login.username);
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                var userFromDb = db.tbl_Login.FirstOrDefault(c => c.Username == login.username);
 
-            //    if (userFromDb != null && userFromDb.Password.Equals(login.password))
-            //        message = Request.CreateResponse(HttpStatusCode.OK, login);
-            //    else
-            //        message = Request.CreateResponse(HttpStatusCode.NotFound, login);
-            //}
-            message = Request.CreateResponse(HttpStatusCode.OK);
+                if (userFromDb != null && userFromDb.Password.Equals(login.password))
+                    message = Request.CreateResponse(HttpStatusCode.OK, login);
+                else
+                    message = Request.CreateResponse(HttpStatusCode.NotFound, login);
+            }
+            //message = Request.CreateResponse(HttpStatusCode.OK);
             return message;
         }
 
