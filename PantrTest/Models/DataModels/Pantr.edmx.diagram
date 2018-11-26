@@ -7,7 +7,6 @@
       <Diagram DiagramId="aec8f8f7324545d08c22851034ed86ca" Name="Diagram1">
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Address" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Material" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PantrDatabaseModel.tbl_QuantityType" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Report" Width="1.5" PointX="7.5" PointY="8.25" IsExpanded="true" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Transaction" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_User" Width="1.5" PointX="5.25" PointY="3.25" IsExpanded="true" />
@@ -18,12 +17,9 @@
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_City" Width="1.5" PointX="0.75" PointY="4" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_Address_tbl_City" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Post" Width="1.5" PointX="7.5" PointY="1.875" />
-        <EntityTypeShape EntityType="PantrDatabaseModel.tbl_PostQuantity" Width="1.5" PointX="9.75" PointY="7.75" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_Post_tbl_Material" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_Post_tbl_User" />
-        <AssociationConnector Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_Post" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_Transaction_tbl_Post" />
-        <AssociationConnector Association="PantrDatabaseModel.FK_tbl_PostQuantity_tbl_QuantityType" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Login" Width="1.5" PointX="0.75" PointY="0.875" />
         <AssociationConnector Association="PantrDatabaseModel.FK_tbl_User_tbl_Login" />
       </Diagram>

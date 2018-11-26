@@ -50,20 +50,13 @@ namespace PantrTest.Controllers
                                      }
                                  },
 
-                                // PostQuantity = new PostQuantityViewModel
-                                // {
-                                  //   QuantityType = new QuantityTypeViewModel
-                                   //  {
-                                     //      QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                                  //   },
-                                    //   Quantity = (int)post.tbl_PostQuantity.Quantity
-                                // },
+                                 Quantity = post.Quantity,
                                  Address = post.Address,
-                                 StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
-                                 EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
+                                 StartTime = (int)post.StartTime,
+                                 EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
-                                 //Date = (DateTime)post.Date
+                                 Date = post.Date.ToString()
                              }).ToList();
 
                 return posts;
@@ -141,8 +134,8 @@ namespace PantrTest.Controllers
                     //    Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
                     //},
                     Address = postFromDb.Address,
-                    StartTime = startTime,
-                    EndTime = endTime,
+                   // StartTime = startTime,
+                   // EndTime = endTime,
                     Claimed = (bool)postFromDb.Claimed,
                     Completed = (bool)postFromDb.Completed,
                     Date = date.ToString("dd/MM/yyyy")
@@ -169,13 +162,13 @@ namespace PantrTest.Controllers
             {
                 tbl_Material material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material);
                 tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == 1); //Ændres til requests user
-                tbl_QuantityType type = db.tbl_QuantityType.FirstOrDefault(t => t.QuantityType == item.QuanityType);
+                //tbl_QuantityType type = db.tbl_QuantityType.FirstOrDefault(t => t.QuantityType == item.QuanityType);
 
-                tbl_PostQuantity postQuantity = new tbl_PostQuantity
-                {
-                    tbl_QuantityType = type,
-                    Quantity = item.Quanity
-                };
+                //tbl_PostQuantity postQuantity = new tbl_PostQuantity
+                //{
+                 //   tbl_QuantityType = type,
+                 //   Quantity = item.Quanity
+               // };
 
                 tbl_Post post = new tbl_Post
                 {

@@ -17,7 +17,6 @@ namespace PantrTest.Models.DataModels
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tbl_Post()
         {
-            this.tbl_PostQuantity = new HashSet<tbl_PostQuantity>();
             this.tbl_Transaction = new HashSet<tbl_Transaction>();
         }
     
@@ -30,11 +29,10 @@ namespace PantrTest.Models.DataModels
         public Nullable<bool> Completed { get; set; }
         public string Address { get; set; }
         public Nullable<System.DateTime> Date { get; set; }
+        public string Quantity { get; set; }
     
         public virtual tbl_Material tbl_Material { get; set; }
         public virtual tbl_User tbl_User { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tbl_PostQuantity> tbl_PostQuantity { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_Transaction> tbl_Transaction { get; set; }
     }
