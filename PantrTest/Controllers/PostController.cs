@@ -59,8 +59,8 @@ namespace PantrTest.Controllers
                                     //   Quantity = (int)post.tbl_PostQuantity.Quantity
                                 // },
                                  Address = post.Address,
-                                 StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
-                                 EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
+                                 StartTime = (int)post.StartTime,
+                                 EndTime = (int)post.EndTime,
                                  Claimed = (bool)post.Claimed,
                                  Completed = (bool)post.Completed,
                                  //Date = (DateTime)post.Date
@@ -123,8 +123,6 @@ namespace PantrTest.Controllers
             PostViewModel post = null;
             if (postFromDb != null)
             {
-                TimeSpan startTime = ConvertIntegerToTimeSpan((int)postFromDb.StartTime);
-                TimeSpan endTime = ConvertIntegerToTimeSpan((int)postFromDb.EndTime);
                 post = new PostViewModel()
                 {
                     Id = postFromDb.PK_Post,
@@ -141,8 +139,8 @@ namespace PantrTest.Controllers
                     //    Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
                     //},
                     Address = postFromDb.Address,
-                    StartTime = startTime,
-                    EndTime = endTime,
+                    StartTime = (int)postFromDb.StartTime,
+                    EndTime = (int)postFromDb.EndTime,
                     Claimed = (bool)postFromDb.Claimed,
                     Completed = (bool)postFromDb.Completed,
                     Date = date.ToString("dd/MM/yyyy")
@@ -162,8 +160,8 @@ namespace PantrTest.Controllers
             var jObject = await request.Content.ReadAsAsync<JObject>();
             Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
 
-            int startTime = ConvertTimeSpanToInteger(item.StartTime);
-            int endTime = ConvertTimeSpanToInteger(item.EndTime);
+            //int startTime = ConvertTimeSpanToInteger(item.StartTime);
+            //int endTime = ConvertTimeSpanToInteger(item.EndTime);
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
@@ -183,8 +181,8 @@ namespace PantrTest.Controllers
                     //tbl_PostQuantity = postQuantity,
                     tbl_User = giver,
                     Address = item.Address,
-                    StartTime = startTime,
-                    EndTime = endTime,
+                    StartTime = item.StartTime,
+                    EndTime = item.EndTime,
                     Claimed = false,
                     Completed = false,
                     Date = DateTime.Today
