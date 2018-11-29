@@ -150,41 +150,39 @@ namespace PantrTest.Controllers
         // POST api/<controller>
         [HttpPost]
         [Route("api/post")]
-        public async Task Post(HttpRequestMessage request)
+        public async Task<HttpResponseMessage> Post (HttpRequestMessage request)
         {
             var jObject = await request.Content.ReadAsAsync<JObject>();
             Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
-
-            //int startTime = ConvertTimeSpanToInteger(item.StartTime);
-            //int endTime = ConvertTimeSpanToInteger(item.EndTime);
+            var message = Request.CreateResponse(HttpStatusCode.Accepted);
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                tbl_Material material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material);
-                tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == 1); //Ændres til requests user
-                //tbl_QuantityType type = db.tbl_QuantityType.FirstOrDefault(t => t.QuantityType == item.QuanityType);
+                tbl_Material material = null;
+                if (item.Material.Type != null)
+                { 
+                    material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material.Type);
+                }
 
-                //tbl_PostQuantity postQuantity = new tbl_PostQuantity
-                //{
-                 //   tbl_QuantityType = type,
-                 //   Quantity = item.Quanity
-               // };
+                tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == 1); //Ændres til requests user
+                DateTime date = DateTime.Parse(item.Date);
 
                 tbl_Post post = new tbl_Post
                 {
                     tbl_Material = material,
-                    Quantity = item.Quanity,
+                    Quantity = item.Quantity,
                     tbl_User = giver,
-                    Address = item.Address,
+                    Address = "",
                     StartTime = item.StartTime,
                     EndTime = item.EndTime,
                     Claimed = false,
                     Completed = false,
-                    Date = DateTime.Today
+                    Date = date
                 };
 
                 db.tbl_Post.Add(post);
                 db.SaveChanges();
+                return request.CreateResponse(HttpStatusCode.OK, item);
             }
         }
 
