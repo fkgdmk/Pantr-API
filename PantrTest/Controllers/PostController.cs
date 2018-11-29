@@ -173,7 +173,7 @@ namespace PantrTest.Controllers
                 tbl_Post post = new tbl_Post
                 {
                     tbl_Material = material,
-                    //tbl_PostQuantity = postQuantity,
+                    Quantity = item.Quanity,
                     tbl_User = giver,
                     Address = item.Address,
                     StartTime = item.StartTime,

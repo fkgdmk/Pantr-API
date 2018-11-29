@@ -11,7 +11,7 @@ namespace PantrTest.Models
         public string Date { get; set; }
         public int StartTime { get; set; }
         public int EndTime { get; set; }
-        public int Quanity { get; set; }
+        public string Quanity { get; set; }
         public string QuanityType { get; set; }
         public string Material { get; set; }
         public string Address { get; set; }
