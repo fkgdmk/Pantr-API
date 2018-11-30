@@ -36,14 +36,27 @@ namespace PantrTest.Controllers
             HttpResponseMessage message = null;
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                var userFromDb = db.tbl_Login.FirstOrDefault(c => c.Username == login.username);
+                var userFromDb = db.tbl_User.FirstOrDefault(c => c.tbl_Login.Username == login.Username);
 
-                if (userFromDb != null && userFromDb.Password.Equals(login.password))
-                    message = Request.CreateResponse(HttpStatusCode.OK, login);
+                if (userFromDb != null && userFromDb.tbl_Login.Password.Equals(login.Password))
+                {
+                    JObject authenticatedUser = new JObject();
+                    authenticatedUser.Add("ID", userFromDb.PK_User);
+                    authenticatedUser.Add("Firstname", userFromDb.Firstname);
+                    authenticatedUser.Add("Surname", userFromDb.Surname);
+                    authenticatedUser.Add("Phone", userFromDb.Phone);
+                    authenticatedUser.Add("Email", userFromDb.Email);
+                    authenticatedUser.Add("IsPanter", userFromDb.IsPanter);
+                    authenticatedUser.Add("Address", userFromDb.tbl_Address.Address + " " + 
+                                                     userFromDb.tbl_Address.tbl_City.City + " " +
+                                                     userFromDb.tbl_Address.tbl_City.Zip);
+
+                    message = Request.CreateResponse(HttpStatusCode.OK, authenticatedUser);
+
+                }
                 else
                     message = Request.CreateResponse(HttpStatusCode.NotFound, login);
             }
-            //message = Request.CreateResponse(HttpStatusCode.OK);
             return message;
         }
 
