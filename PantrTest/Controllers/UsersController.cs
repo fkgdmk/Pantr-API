@@ -8,6 +8,9 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 using PantrTest.Models.DataModels;
 using PantrTest.Models.ViewModels;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace PantrTest.Controllers
 {
@@ -72,12 +75,53 @@ namespace PantrTest.Controllers
                 };
                 return user;
             }
+
         }
 
         // POST api/values
-        public HttpResponseMessage Post(UserViewModel register)
+        public async Task<HttpResponseMessage> Post(HttpRequestMessage registerData)
         {
-            var message = Request.CreateResponse(HttpStatusCode.Accepted, register);
+            var jObject = await registerData.Content.ReadAsAsync<JObject>();
+            UserViewModel registerUser = JsonConvert.DeserializeObject<UserViewModel>(jObject.ToString());
+
+            HttpResponseMessage message = null;
+
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                var city = db.tbl_City.FirstOrDefault(c => c.Zip == registerUser.Address.City.Zip).PK_City;
+                tbl_Login registerLogin = new tbl_Login()
+                {
+                    Username = registerUser.Login.Username,
+                    Password = registerUser.Login.Password
+                };
+
+                tbl_Address registerAddress = new tbl_Address()
+                {
+                    Address = registerUser.Address.Address,
+                    FK_City = city
+                };
+
+                db.tbl_Login.Add(registerLogin);
+                db.tbl_Address.Add(registerAddress);
+                db.SaveChanges();
+
+                tbl_User newUser = new tbl_User()
+                {
+                    Firstname = registerUser.Firstname,
+                    Surname = registerUser.Surname,
+                    Email = registerUser.Email,
+                    Phone = registerUser.Phone,
+                    FK_Address = db.tbl_Address.FirstOrDefault(c => c.Address == registerAddress.Address).PK_Address,
+                    IsPanter = registerUser.IsPanter,
+                    FK_Login = db.tbl_Login.FirstOrDefault(c => c.Username == registerLogin.Username).PK_Login
+                };
+
+                db.tbl_User.Add(newUser);
+                db.SaveChanges();
+                //I stedet for at returnere newUser som poco, skal det måske laves som JObject(se logincontroller)
+                message = Request.CreateResponse(HttpStatusCode.OK, newUser);
+            }
+
             return message;
         }
 
