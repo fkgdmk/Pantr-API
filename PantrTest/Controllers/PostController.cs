@@ -123,14 +123,7 @@ namespace PantrTest.Controllers
                     {
                         Type = postFromDb.tbl_Material.Type
                     },
-                    //PostQuantity = new PostQuantityViewModel
-                    //{
-                    //    QuantityType = new QuantityTypeViewModel
-                    //    {
-                    //        QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                    //    },
-                    //    Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
-                    //},
+                    Quantity = postFromDb.Quantity,
                     Address = postFromDb.Address,
 
                     StartTime = (int)postFromDb.StartTime,
