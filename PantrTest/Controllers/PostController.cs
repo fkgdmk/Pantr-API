@@ -226,14 +226,36 @@ namespace PantrTest.Controllers
             }
         }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+        public HttpResponseMessage UpdatePost (int id)
         {
-            PantrDatabaseEntities db = new PantrDatabaseEntities();
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == id);
 
-            tbl_Post post = db.tbl_Post.Find(id);
-            db.tbl_Post.Remove(post);
-            db.SaveChanges();
+                if (post == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+
+            }
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
+        // DELETE api/<controller>/5
+        public HttpResponseMessage Delete(int id)
+        {
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == id);
+                if (post == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+                db.tbl_Post.Remove(post);
+                db.SaveChanges();
+            }
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }
