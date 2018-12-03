@@ -226,8 +226,14 @@ namespace PantrTest.Controllers
             }
         }
 
-        public HttpResponseMessage UpdatePost (int id)
+        [HttpPut]
+        [Route("api/updatepost/{id:int}")]
+        public async Task<HttpResponseMessage> UpdatePost (int id, HttpRequestMessage request)
         {
+            var jObject = await request.Content.ReadAsAsync<JObject>();
+            Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
+            var message = Request.CreateResponse(HttpStatusCode.Accepted);
+
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == id);
@@ -237,9 +243,22 @@ namespace PantrTest.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
+                tbl_Material material = null;
+                if (item.Material.Type != null)
+                {
+                    material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material.Type);
+                }
 
+                DateTime date = DateTime.Parse(item.Date);
+                post.tbl_Material = material;
+                post.Quantity = item.Quantity;
+                post.StartTime = item.StartTime;
+                post.EndTime = item.EndTime;
+                post.Date = date;
+
+                db.SaveChanges();
             }
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.Accepted);
         }
 
         // DELETE api/<controller>/5
