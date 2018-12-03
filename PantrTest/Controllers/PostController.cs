@@ -216,20 +216,16 @@ namespace PantrTest.Controllers
                 
                 if(ExistingPost != null)
                 {
-                    ExistingPost.Claimed = true;
+                    ExistingPost.Claimed = false;
 
                     db.SaveChanges();
                     Console.WriteLine("Vi kom sgu til enden!");
-                
                 }
                 else
                 {
                     return NotFound();
                 }
-
                 return Ok();
-        
-
             }
         }
 
