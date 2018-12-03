@@ -187,6 +187,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -222,6 +223,12 @@
     <Compile Include="Models\DataModels\tbl_Post.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataModels\tbl_Material.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModels\tbl_Post.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DataModels\tbl_Report.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
@@ -234,6 +241,7 @@
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ViewModels\AddressViewModel.cs" />
     <Compile Include="Models\ViewModels\CityViewModel.cs" />
+    <Compile Include="Models\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\ViewModels\PostQuantityViewModel.cs" />
     <Compile Include="Models\ViewModels\QuantityTypeViewModel.cs" />
     <Compile Include="Models\ViewModels\ReportViewModel.cs" />
