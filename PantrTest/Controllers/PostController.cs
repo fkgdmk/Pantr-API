@@ -23,43 +23,6 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-<<<<<<< HEAD
-                List<PostViewModel> posts = (from post in db.tbl_Post  
-                             select new PostViewModel
-                             {
-                                 Id = post.PK_Post,
-                                 Material = new MaterialViewModel
-                                 {
-                                     Type = post.tbl_Material.Type
-
-                                 },
-                                 Giver = new UserViewModel
-                                 {
-                                     Firstname = post.tbl_User.Firstname,
-                                     Surname = post.tbl_User.Surname,
-                                     Phone = post.tbl_User.Phone,
-                                     Email = post.tbl_User.Email,
-                                     IsPanter = (bool)post.tbl_User.IsPanter,
-                                     Address = new AddressViewModel()
-                                     {
-                                         Address = post.tbl_User.tbl_Address.Address,
-                                         City = new CityViewModel()
-                                         {
-                                             City = post.tbl_User.tbl_Address.tbl_City.City,
-                                             Zip = post.tbl_User.tbl_Address.tbl_City.Zip
-                                         }
-                                     }
-                                 },
-
-                                 Quantity = post.Quantity,
-                                 Address = post.Address,
-                                 StartTime = (int)post.StartTime,
-                                 EndTime = (int)post.EndTime,
-                                 Claimed = (bool)post.Claimed,
-                                 Completed = (bool)post.Completed,
-                                 Date = post.Date.ToString()
-                             }).ToList();
-=======
 
                 //List<JObject> lollern = new List<JObject>();
 
@@ -118,7 +81,6 @@ namespace PantrTest.Controllers
                                                  Completed = (bool)post.Completed,
                                                  //Date = (DateTime)post.Date
                                              }).ToList();
->>>>>>> anders
 
                 return posts;
             }
@@ -184,14 +146,7 @@ namespace PantrTest.Controllers
                     {
                         Type = postFromDb.tbl_Material.Type
                     },
-<<<<<<< HEAD
-                    Quantity = postFromDb.Quantity,
-                    Address = postFromDb.Address,
 
-                    StartTime = (int)postFromDb.StartTime,
-                    EndTime = (int)postFromDb.EndTime,
-
-=======
                     PostQuantity = new PostQuantityViewModel
                     {
                         QuantityType = new QuantityTypeViewModel
@@ -203,7 +158,7 @@ namespace PantrTest.Controllers
                     Address = postFromDb.Address,
                     //StartTime = startTime,
                     //EndTime = endTime,
->>>>>>> anders
+
                     Claimed = (bool)postFromDb.Claimed,
                     Completed = (bool)postFromDb.Completed,
                     Date = date.ToString("dd/MM/yyyy")
