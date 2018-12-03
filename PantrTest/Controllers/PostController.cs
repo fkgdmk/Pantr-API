@@ -23,48 +23,64 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                List<PostViewModel> posts = (from post in db.tbl_Post  
-                             select new PostViewModel
-                             {
-                                 Id = post.PK_Post,
-                                 Material = new MaterialViewModel
-                                 {
-                                     Type = post.tbl_Material.Type
 
-                                 },
-                                 Giver = new UserViewModel
-                                 {
-                                     Firstname = post.tbl_User.Firstname,
-                                     Surname = post.tbl_User.Surname,
-                                     Phone = post.tbl_User.Phone,
-                                     Email = post.tbl_User.Email,
-                                     IsPanter = (bool)post.tbl_User.IsPanter,
-                                     Address = new AddressViewModel()
-                                     {
-                                         Address = post.tbl_User.tbl_Address.Address,
-                                         City = new CityViewModel()
-                                         {
-                                             City = post.tbl_User.tbl_Address.tbl_City.City,
-                                             Zip = post.tbl_User.tbl_Address.tbl_City.Zip
-                                         }
-                                     }
-                                 },
+                //List<JObject> lollern = new List<JObject>();
 
-                                // PostQuantity = new PostQuantityViewModel
-                                // {
-                                  //   QuantityType = new QuantityTypeViewModel
-                                   //  {
-                                     //      QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                                  //   },
-                                    //   Quantity = (int)post.tbl_PostQuantity.Quantity
-                                // },
-                                 Address = post.Address,
-                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
-                                 //EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
-                                 Claimed = (bool)post.Claimed,
-                                 Completed = (bool)post.Completed,
-                                 //Date = (DateTime)post.Date
-                             }).ToList();
+                //var postststs = db.tbl_Post.Select(c => c).ToList();
+
+                //foreach (var item in postststs)
+                //{
+                //    JObject j = new JObject();
+                //    j.Add(item.Claimed);
+                //    j.Add(item.Date);
+                //    lollern.Add(j);
+                //}
+
+                //return lollern;
+
+
+                List<PostViewModel> posts = (from post in db.tbl_Post
+                                             select new PostViewModel
+                                             {
+                                                 Id = post.PK_Post,
+                                                 Material = new MaterialViewModel
+                                                 {
+                                                     Type = post.tbl_Material.Type
+
+                                                 },
+                                                 Giver = new UserViewModel
+                                                 {
+                                                     Firstname = post.tbl_User.Firstname,
+                                                     Surname = post.tbl_User.Surname,
+                                                     Phone = post.tbl_User.Phone,
+                                                     Email = post.tbl_User.Email,
+                                                     IsPanter = (bool)post.tbl_User.IsPanter,
+                                                     Address = new AddressViewModel()
+                                                     {
+                                                         Address = post.tbl_User.tbl_Address.Address,
+                                                         City = new CityViewModel()
+                                                         {
+                                                             City = post.tbl_User.tbl_Address.tbl_City.City,
+                                                             Zip = post.tbl_User.tbl_Address.tbl_City.Zip
+                                                         }
+                                                     }
+                                                 },
+
+                                                 PostQuantity = new PostQuantityViewModel
+                                                 {
+                                                     QuantityType = new QuantityTypeViewModel
+                                                     {
+                                                         //QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                                     },
+                                                     //Quantity = (int)post.tbl_PostQuantity.Quantity
+                                                 },
+                                                 Address = post.Address,
+                                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
+                                                 //EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
+                                                 Claimed = (bool)post.Claimed,
+                                                 Completed = (bool)post.Completed,
+                                                 //Date = (DateTime)post.Date
+                                             }).ToList();
 
                 return posts;
             }

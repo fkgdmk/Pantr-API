@@ -73,6 +73,7 @@ namespace PantrTest.Controllers
                         }
                     }
                 };
+
                 return user;
             }
 
@@ -115,6 +116,8 @@ namespace PantrTest.Controllers
                     IsPanter = registerUser.IsPanter,
                     FK_Login = db.tbl_Login.FirstOrDefault(c => c.Username == registerLogin.Username).PK_Login
                 };
+
+
 
                 db.tbl_User.Add(newUser);
                 db.SaveChanges();

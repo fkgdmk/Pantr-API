@@ -47,7 +47,7 @@ namespace PantrTest.Controllers
                     authenticatedUser.Add("Phone", userFromDb.Phone);
                     authenticatedUser.Add("Email", userFromDb.Email);
                     authenticatedUser.Add("IsPanter", userFromDb.IsPanter);
-                    authenticatedUser.Add("Address", userFromDb.tbl_Address.Address + " " + 
+                    authenticatedUser.Add("Address", userFromDb.tbl_Address.Address + ", " + 
                                                      userFromDb.tbl_Address.tbl_City.City + " " +
                                                      userFromDb.tbl_Address.tbl_City.Zip);
 
