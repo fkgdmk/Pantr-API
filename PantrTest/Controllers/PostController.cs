@@ -23,6 +23,7 @@ namespace PantrTest.Controllers
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
+<<<<<<< HEAD
                 List<PostViewModel> posts = (from post in db.tbl_Post  
                              select new PostViewModel
                              {
@@ -58,6 +59,66 @@ namespace PantrTest.Controllers
                                  Completed = (bool)post.Completed,
                                  Date = post.Date.ToString()
                              }).ToList();
+=======
+
+                //List<JObject> lollern = new List<JObject>();
+
+                //var postststs = db.tbl_Post.Select(c => c).ToList();
+
+                //foreach (var item in postststs)
+                //{
+                //    JObject j = new JObject();
+                //    j.Add(item.Claimed);
+                //    j.Add(item.Date);
+                //    lollern.Add(j);
+                //}
+
+                //return lollern;
+
+
+                List<PostViewModel> posts = (from post in db.tbl_Post
+                                             select new PostViewModel
+                                             {
+                                                 Id = post.PK_Post,
+                                                 Material = new MaterialViewModel
+                                                 {
+                                                     Type = post.tbl_Material.Type
+
+                                                 },
+                                                 Giver = new UserViewModel
+                                                 {
+                                                     Firstname = post.tbl_User.Firstname,
+                                                     Surname = post.tbl_User.Surname,
+                                                     Phone = post.tbl_User.Phone,
+                                                     Email = post.tbl_User.Email,
+                                                     IsPanter = (bool)post.tbl_User.IsPanter,
+                                                     Address = new AddressViewModel()
+                                                     {
+                                                         Address = post.tbl_User.tbl_Address.Address,
+                                                         City = new CityViewModel()
+                                                         {
+                                                             City = post.tbl_User.tbl_Address.tbl_City.City,
+                                                             Zip = post.tbl_User.tbl_Address.tbl_City.Zip
+                                                         }
+                                                     }
+                                                 },
+
+                                                 PostQuantity = new PostQuantityViewModel
+                                                 {
+                                                     QuantityType = new QuantityTypeViewModel
+                                                     {
+                                                         //QuantityType = post.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                                                     },
+                                                     //Quantity = (int)post.tbl_PostQuantity.Quantity
+                                                 },
+                                                 Address = post.Address,
+                                                 //StartTime = ConvertIntegerToTimeSpan((int)post.StartTime),
+                                                 //EndTime = ConvertIntegerToTimeSpan((int)post.EndTime),
+                                                 Claimed = (bool)post.Claimed,
+                                                 Completed = (bool)post.Completed,
+                                                 //Date = (DateTime)post.Date
+                                             }).ToList();
+>>>>>>> anders
 
                 return posts;
             }
@@ -108,7 +169,7 @@ namespace PantrTest.Controllers
 
         [HttpGet]
         [Route("api/post/getuserspost/{userId:int}")]
-        public PostViewModel GetUsersPost (int userId)
+        public PostViewModel GetUsersPost(int userId)
         {
             PantrDatabaseEntities db = new PantrDatabaseEntities();
             tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
@@ -123,23 +184,30 @@ namespace PantrTest.Controllers
                     {
                         Type = postFromDb.tbl_Material.Type
                     },
-                    //PostQuantity = new PostQuantityViewModel
-                    //{
-                    //    QuantityType = new QuantityTypeViewModel
-                    //    {
-                    //        QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
-                    //    },
-                    //    Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
-                    //},
+<<<<<<< HEAD
+                    Quantity = postFromDb.Quantity,
                     Address = postFromDb.Address,
 
                     StartTime = (int)postFromDb.StartTime,
                     EndTime = (int)postFromDb.EndTime,
 
+=======
+                    PostQuantity = new PostQuantityViewModel
+                    {
+                        QuantityType = new QuantityTypeViewModel
+                        {
+                            //QuantityType = postFromDb.tbl_PostQuantity.tbl_QuantityType.QuantityType
+                        },
+                        //Quantity = (int)postFromDb.tbl_PostQuantity.Quantity
+                    },
+                    Address = postFromDb.Address,
+                    //StartTime = startTime,
+                    //EndTime = endTime,
+>>>>>>> anders
                     Claimed = (bool)postFromDb.Claimed,
                     Completed = (bool)postFromDb.Completed,
                     Date = date.ToString("dd/MM/yyyy")
-            };
+                };
 
 
             }
@@ -233,14 +301,55 @@ namespace PantrTest.Controllers
             }
         }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+        [HttpPut]
+        [Route("api/updatepost/{id:int}")]
+        public async Task<HttpResponseMessage> UpdatePost (int id, HttpRequestMessage request)
         {
-            PantrDatabaseEntities db = new PantrDatabaseEntities();
+            var jObject = await request.Content.ReadAsAsync<JObject>();
+            Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
+            var message = Request.CreateResponse(HttpStatusCode.Accepted);
 
-            tbl_Post post = db.tbl_Post.Find(id);
-            db.tbl_Post.Remove(post);
-            db.SaveChanges();
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == id);
+
+                if (post == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                tbl_Material material = null;
+                if (item.Material.Type != null)
+                {
+                    material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material.Type);
+                }
+
+                DateTime date = DateTime.Parse(item.Date);
+                post.tbl_Material = material;
+                post.Quantity = item.Quantity;
+                post.StartTime = item.StartTime;
+                post.EndTime = item.EndTime;
+                post.Date = date;
+
+                db.SaveChanges();
+            }
+            return Request.CreateResponse(HttpStatusCode.Accepted);
+        }
+
+        // DELETE api/<controller>/5
+        public HttpResponseMessage Delete(int id)
+        {
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == id);
+                if (post == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+                db.tbl_Post.Remove(post);
+                db.SaveChanges();
+            }
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }

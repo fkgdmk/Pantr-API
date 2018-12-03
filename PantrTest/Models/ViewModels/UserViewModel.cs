@@ -13,6 +13,7 @@ namespace PantrTest.Models.ViewModels
         public string Email { get; set; }
         public bool IsPanter { get; set; }
         public AddressViewModel Address { get; set; }
+        public LoginViewModel Login { get; set; }
 
     }
 }
