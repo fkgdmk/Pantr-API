@@ -50,6 +50,7 @@ namespace PantrTest.Controllers
                     authenticatedUser.Add("Address", userFromDb.tbl_Address.Address + ", " + 
                                                      userFromDb.tbl_Address.tbl_City.City + " " +
                                                      userFromDb.tbl_Address.tbl_City.Zip);
+                    authenticatedUser.Add("Username", userFromDb.tbl_Login.Username);
 
                     message = Request.CreateResponse(HttpStatusCode.OK, authenticatedUser);
 
