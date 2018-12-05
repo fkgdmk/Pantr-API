@@ -61,6 +61,9 @@ namespace PantrTest.Controllers
 
                 //List<JObject> lollern = new List<JObject>();
 
+                //List<JObject> lollern = new List<JObject>();
+
+
                 //var postststs = db.tbl_Post.Select(c => c).ToList();
 
                 //foreach (var item in postststs)
@@ -71,7 +74,10 @@ namespace PantrTest.Controllers
                 //    lollern.Add(j);
                 //}
 
+
+                //return lollern;
                 return posts;
+
             }
         }
 
@@ -135,12 +141,6 @@ namespace PantrTest.Controllers
                     {
                         Type = postFromDb.tbl_Material.Type
                     },
-
-                    Quantity = postFromDb.Quantity,
-                    Address = postFromDb.Address,
-
-                    StartTime = (int)postFromDb.StartTime,
-                    EndTime = (int)postFromDb.EndTime,
 
                     Claimed = (bool)postFromDb.Claimed,
                     Completed = (bool)postFromDb.Completed,
