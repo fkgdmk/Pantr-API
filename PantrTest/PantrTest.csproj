@@ -217,16 +217,10 @@
     <Compile Include="Models\DataModels\tbl_Login.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DataModels\tbl_Material.cs">
-      <DependentUpon>Pantr.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\DataModels\tbl_Post.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataModels\tbl_Material.cs">
-      <DependentUpon>Pantr.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DataModels\tbl_Post.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataModels\tbl_Report.cs">
