@@ -30,7 +30,6 @@ namespace PantrTest.Controllers
         public HttpResponseMessage GetUserReservation(int userId)
         {
             HttpResponseMessage message = null;
-            //ObservableCollection<JObject> reservations = new ObservableCollection<JObject>();
             List<JObject> reservations = new List<JObject>();
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
