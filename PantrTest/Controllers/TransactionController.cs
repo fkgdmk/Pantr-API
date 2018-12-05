@@ -26,7 +26,7 @@ namespace PantrTest.Controllers
         }
 
         [HttpGet]
-        [Route("api/users/reservation/{userId:int}")]
+        [Route("api/transaction/users/{userId:int}")]
         public HttpResponseMessage GetUserReservation(int userId)
         {
             HttpResponseMessage message = null;
@@ -51,7 +51,7 @@ namespace PantrTest.Controllers
                         j.Add("PeriodForPickup", "Kl " + start.ToString("hh':'mm") + " - " + end.ToString("hh':'mm"));
                         j.Add("Date", date.ToString("dd-MM-yyyy"));
                         j.Add("Material", item.tbl_Material.Type);
-                        j.Add("Id", item.PK_Post);   
+                        j.Add("Id", item.PK_Post);
                         reservations.Add(j);
                     }
                     message = Request.CreateResponse(HttpStatusCode.OK, reservations);
@@ -66,14 +66,38 @@ namespace PantrTest.Controllers
         {
         }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public async Task<HttpResponseMessage> Put(HttpRequestMessage data)
         {
+            HttpResponseMessage message = null;
+
+            var jObject = await data.Content.ReadAsAsync<JObject>();    
+            int postId = (int)jObject["Id"];
+
+            try
+            {
+                using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+                {
+                    var transactionToDelete = db.tbl_Transaction.FirstOrDefault(c => c.FK_Post == postId);
+
+                    transactionToDelete.tbl_Post.Claimed = false;
+                    transactionToDelete.Annulled = true;
+
+                    db.SaveChanges();
+                }
+                message = Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                message = Request.CreateResponse(HttpStatusCode.NotModified);
+            }
+           
+            return message;
         }
 
-        // DELETE api/<controller>/5
+        
         public void Delete(int id)
         {
+            
         }
     }
 }
