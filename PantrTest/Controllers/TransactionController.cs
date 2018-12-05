@@ -26,7 +26,7 @@ namespace PantrTest.Controllers
         }
 
         [HttpGet]
-        [Route("api/user/reservation/{userId:int}")]
+        [Route("api/users/reservation/{userId:int}")]
         public HttpResponseMessage GetUserReservation(int userId)
         {
             HttpResponseMessage message = null;
@@ -51,6 +51,8 @@ namespace PantrTest.Controllers
                                          item.tbl_User.tbl_Address.tbl_City.City);
                         j.Add("PeriodForPickup", "Kl " + start.ToString("hh':'mm") + " - " + end.ToString("hh':'mm"));
                         j.Add("Date", date.ToString("dd-MM-yyyy"));
+                        j.Add("Material", item.tbl_Material.Type);
+                        j.Add("Id", item.PK_Post);   
                         reservations.Add(j);
                     }
                     message = Request.CreateResponse(HttpStatusCode.OK, reservations);
