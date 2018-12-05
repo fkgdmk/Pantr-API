@@ -190,6 +190,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -215,12 +216,6 @@
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataModels\tbl_Login.cs">
-      <DependentUpon>Pantr.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DataModels\tbl_Material.cs">
-      <DependentUpon>Pantr.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DataModels\tbl_Post.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataModels\tbl_Material.cs">
