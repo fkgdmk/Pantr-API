@@ -122,34 +122,38 @@ namespace PantrTest.Controllers
 
         [HttpGet]
         [Route("api/post/getuserspost/{userId:int}")]
-        public PostViewModel GetUsersPost(int userId)
+        public HttpResponseMessage GetUsersPost(int userId)
         {
-            PantrDatabaseEntities db = new PantrDatabaseEntities();
-            tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
-            DateTime date = (DateTime)postFromDb.Date;
-            PostViewModel post = null;
-            if (postFromDb != null)
+            JObject post = new JObject();
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                post = new PostViewModel()
+                tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
+
+                if (postFromDb != null)
                 {
-                    Id = postFromDb.PK_Post,
-                    Material = new MaterialViewModel
-                    {
-                        Type = postFromDb.tbl_Material.Type
-                    },
-                    Quantity = postFromDb.Quantity,
-                    Address = postFromDb.Address,
+                    tbl_User user = db.tbl_User.Find(userId);
+                    DateTime date = (DateTime)postFromDb.Date;
+                        post.Add("Id", postFromDb.PK_Post);
+                        post.Add("Material", postFromDb.tbl_Material.Type);
+                        post.Add("Quantity", postFromDb.Quantity);
+                        post.Add("Date", date.ToString("dd/MM/yyyy"));
+                        post.Add("StartTime", ConvertTime((int)postFromDb.StartTime));
+                        post.Add("EndTime", ConvertTime((int)postFromDb.EndTime));
+                        post.Add("Claimed", postFromDb.Claimed);
+                        post.Add("Completed", postFromDb.Completed);
+                        post.Add("Address", user.tbl_Address.Address + ", " +
+                                         user.tbl_Address.tbl_City.City + " " +
+                                         user.tbl_Address.tbl_City.Zip);
 
-                    StartTime = (int)postFromDb.StartTime,
-                    EndTime = (int)postFromDb.EndTime,
-                    Claimed = (bool)postFromDb.Claimed,
-                    Completed = (bool)postFromDb.Completed,
-                    Date = date.ToString("dd/MM/yyyy")
-                };
-
-
-            }
-            return post;
+                        response = Request.CreateResponse(HttpStatusCode.OK, post);
+                } else
+                {
+                    response = Request.CreateResponse(HttpStatusCode.NotFound, post);
+                }
+            };
+            return response;
         }
 
 
@@ -159,28 +163,28 @@ namespace PantrTest.Controllers
         public async Task<HttpResponseMessage> Post (HttpRequestMessage request)
         {
             var jObject = await request.Content.ReadAsAsync<JObject>();
-            Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
+            PostViewModel newPost = JsonConvert.DeserializeObject<PostViewModel>(jObject.ToString());
             var message = Request.CreateResponse(HttpStatusCode.Accepted);
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 tbl_Material material = null;
-                if (item.Material.Type != null)
+                if (newPost.Material.Type != null)
                 { 
-                    material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material.Type);
+                    material = db.tbl_Material.FirstOrDefault(m => m.Type == newPost.Material.Type);
                 }
 
-                tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == 1); //Ændres til requests user
-                DateTime date = DateTime.Parse(item.Date);
+                tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == newPost.Giver.Id); //Ændres til requests user
+                DateTime date = DateTime.Parse(newPost.Date);
 
                 tbl_Post post = new tbl_Post
                 {
                     tbl_Material = material,
-                    Quantity = item.Quantity,
+                    Quantity = newPost.Quantity,
                     tbl_User = giver,
                     Address = "",
-                    StartTime = item.StartTime,
-                    EndTime = item.EndTime,
+                    StartTime = newPost.StartTime,
+                    EndTime = newPost.EndTime,
                     Claimed = false,
                     Completed = false,
                     Date = date
@@ -188,7 +192,7 @@ namespace PantrTest.Controllers
 
                 db.tbl_Post.Add(post);
                 db.SaveChanges();
-                return request.CreateResponse(HttpStatusCode.OK, item);
+                return request.CreateResponse(HttpStatusCode.OK, newPost);
             }
         }
 
@@ -200,12 +204,13 @@ namespace PantrTest.Controllers
             return minutesAfterMidnight;
         }
 
-        public TimeSpan ConvertIntegerToTimeSpan (int minutesAfterMidnight) {
+        public string ConvertTime (int minutesAfterMidnight) {
 
             int hours = minutesAfterMidnight / 60;
             int minutes = minutesAfterMidnight % 60;
-
-            TimeSpan time = new TimeSpan(hours, minutes, 0);
+            TimeSpan timeSpan = new TimeSpan(hours, minutes, 0);
+            string[] timeArr = timeSpan.ToString().Split(':');
+            string time = timeArr[0] + ":" + timeArr[1];
 
 
             //TimeSpan time = midnight.Add(hours)
@@ -283,6 +288,13 @@ namespace PantrTest.Controllers
                 if (post == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                tbl_Transaction transaction = db.tbl_Transaction.FirstOrDefault(t => t.FK_Panter == post.PK_Post);
+
+                if (transaction != null)
+                {
+                    transaction.Annulled = true;
                 }
                 db.tbl_Post.Remove(post);
                 db.SaveChanges();
