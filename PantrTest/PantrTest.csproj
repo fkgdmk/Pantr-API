@@ -224,6 +224,9 @@
     <Compile Include="Models\DataModels\tbl_Material.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataModels\tbl_Quantity.cs">
+      <DependentUpon>Pantr.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DataModels\tbl_Report.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
@@ -239,6 +242,7 @@
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\ViewModels\PostQuantityViewModel.cs" />
     <Compile Include="Models\ViewModels\QuantityTypeViewModel.cs" />
+    <Compile Include="Models\ViewModels\QuantityViewModel.cs" />
     <Compile Include="Models\ViewModels\ReportViewModel.cs" />
     <Compile Include="Models\ViewModels\UserViewModel.cs" />
     <Compile Include="Models\ViewModels\MaterialViewModel.cs" />

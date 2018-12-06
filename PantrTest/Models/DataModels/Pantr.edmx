@@ -50,6 +50,16 @@
           <Property Name="Address" Type="varchar" MaxLength="100" />
           <Property Name="Date" Type="datetime2" Precision="7" />
           <Property Name="Quantity" Type="nchar" MaxLength="50" />
+          <Property Name="FK_Quantity" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Quantity">
+          <Key>
+            <PropertyRef Name="PK_Quantity" />
+          </Key>
+          <Property Name="PK_Quantity" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Bags" Type="int" Nullable="false" />
+          <Property Name="Sacks" Type="int" Nullable="false" />
+          <Property Name="Cases" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Report">
           <Key>
@@ -105,6 +115,18 @@
             </Principal>
             <Dependent Role="tbl_Post">
               <PropertyRef Name="FK_Material" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_Post_tbl_Quantity">
+          <End Role="tbl_Quantity" Type="Self.tbl_Quantity" Multiplicity="0..1" />
+          <End Role="tbl_Post" Type="Self.tbl_Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Quantity">
+              <PropertyRef Name="PK_Quantity" />
+            </Principal>
+            <Dependent Role="tbl_Post">
+              <PropertyRef Name="FK_Quantity" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -198,6 +220,7 @@
           <EntitySet Name="tbl_Login" EntityType="Self.tbl_Login" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Material" EntityType="Self.tbl_Material" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Quantity" EntityType="Self.tbl_Quantity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Report" EntityType="Self.tbl_Report" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Transaction" EntityType="Self.tbl_Transaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_User" EntityType="Self.tbl_User" Schema="dbo" store:Type="Tables" />
@@ -207,6 +230,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_tbl_Post_tbl_Material" Association="Self.FK_tbl_Post_tbl_Material">
             <End Role="tbl_Material" EntitySet="tbl_Material" />
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_Post_tbl_Quantity" Association="Self.FK_tbl_Post_tbl_Quantity">
+            <End Role="tbl_Quantity" EntitySet="tbl_Quantity" />
             <End Role="tbl_Post" EntitySet="tbl_Post" />
           </AssociationSet>
           <AssociationSet Name="FK_tbl_Post_tbl_User" Association="Self.FK_tbl_Post_tbl_User">
@@ -396,6 +423,11 @@
             <End Role="tbl_Login" EntitySet="tbl_Login" />
             <End Role="tbl_User" EntitySet="tbl_User" />
           </AssociationSet>
+          <EntitySet Name="tbl_Quantity" EntityType="PantrDatabaseModel.tbl_Quantity" />
+          <AssociationSet Name="FK_tbl_Post_tbl_Quantity" Association="PantrDatabaseModel.FK_tbl_Post_tbl_Quantity">
+            <End Role="tbl_Quantity" EntitySet="tbl_Quantity" />
+            <End Role="tbl_Post" EntitySet="tbl_Post" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="tbl_City">
           <Key>
@@ -435,6 +467,8 @@
           <NavigationProperty Name="tbl_User" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_User" FromRole="tbl_Post" ToRole="tbl_User" />
           <NavigationProperty Name="tbl_Transaction" Relationship="PantrDatabaseModel.FK_tbl_Transaction_tbl_Post" FromRole="tbl_Post" ToRole="tbl_Transaction" />
           <Property Name="Quantity" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="FK_Quantity" Type="Int32" />
+          <NavigationProperty Name="tbl_Quantity" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_Quantity" FromRole="tbl_Post" ToRole="tbl_Quantity" />
         </EntityType>
         <Association Name="FK_tbl_Post_tbl_Material">
           <End Type="PantrDatabaseModel.tbl_Material" Role="tbl_Material" Multiplicity="0..1" />
@@ -490,6 +524,28 @@
             </Principal>
             <Dependent Role="tbl_User">
               <PropertyRef Name="FK_Login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_Quantity">
+          <Key>
+            <PropertyRef Name="PK_Quantity" />
+          </Key>
+          <Property Name="PK_Quantity" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Bags" Type="Int32" Nullable="false" />
+          <Property Name="Sacks" Type="Int32" Nullable="false" />
+          <Property Name="Cases" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_Post" Relationship="PantrDatabaseModel.FK_tbl_Post_tbl_Quantity" FromRole="tbl_Quantity" ToRole="tbl_Post" />
+        </EntityType>
+        <Association Name="FK_tbl_Post_tbl_Quantity">
+          <End Type="PantrDatabaseModel.tbl_Quantity" Role="tbl_Quantity" Multiplicity="0..1" />
+          <End Type="PantrDatabaseModel.tbl_Post" Role="tbl_Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Quantity">
+              <PropertyRef Name="PK_Quantity" />
+            </Principal>
+            <Dependent Role="tbl_Post">
+              <PropertyRef Name="FK_Quantity" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -564,6 +620,7 @@
           <EntitySetMapping Name="tbl_Post">
             <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Post">
               <MappingFragment StoreEntitySet="tbl_Post">
+                <ScalarProperty Name="FK_Quantity" ColumnName="FK_Quantity" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
@@ -583,6 +640,16 @@
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="PK_Login" ColumnName="PK_Login" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Quantity">
+            <EntityTypeMapping TypeName="PantrDatabaseModel.tbl_Quantity">
+              <MappingFragment StoreEntitySet="tbl_Quantity">
+                <ScalarProperty Name="Cases" ColumnName="Cases" />
+                <ScalarProperty Name="Sacks" ColumnName="Sacks" />
+                <ScalarProperty Name="Bags" ColumnName="Bags" />
+                <ScalarProperty Name="PK_Quantity" ColumnName="PK_Quantity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

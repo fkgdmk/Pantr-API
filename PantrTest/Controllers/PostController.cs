@@ -19,66 +19,109 @@ namespace PantrTest.Controllers
     {
         // GET api/<controller>
         [Route("api/posts")]
-        public List<PostViewModel> Get()
+        public List<JObject> Get()
+        {
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {                   
+                    List<JObject> posts = new List<JObject>();
+
+                    List<tbl_Post> allNonClaimedPosts =  db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                foreach (var post in allNonClaimedPosts)
+                {
+                    JObject postJson = new JObject();
+                    postJson.Add("Id", post.PK_Post);
+                    var giver = db.tbl_User.FirstOrDefault(user => user.PK_User == post.FK_Giver);
+                    var address = db.tbl_Address.FirstOrDefault(giverAddress => giverAddress.PK_Address == giver.FK_Address);
+                    var zipcode = db.tbl_City.FirstOrDefault(giverAdressZipcode => giverAdressZipcode.PK_City == address.FK_City);
+                    postJson.Add("Address", address.Address + ", " + zipcode.Zip + " " + zipcode.City);
+                    var quantity = db.tbl_Quantity.FirstOrDefault(postsQuantity => post.FK_Quantity == postsQuantity.PK_Quantity);
+                    postJson.Add("Quantity", FormatQuantity(quantity));
+                    var material = db.tbl_Material.FirstOrDefault(postsMaterial => post.FK_Material == postsMaterial.PK_Material);
+                    postJson.Add("Material", material.Type);
+                    string date = post.Date.Value.ToString("dd-MM-yyyy");
+                    postJson.Add("Date", date);
+                    string periode = FormatTimeSpan(post);
+                    postJson.Add("PeriodForPickup", periode);
+                    postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
+
+
+                    posts.Add(postJson);
+                } 
+                return posts;
+            }   
+        }
+        /**
+        [HttpGet]
+        [Route("api/posts/{zipcode:string}")]
+        public List<JObject> Get(string zipcode)
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                List<PostViewModel> posts = (from post in db.tbl_Post
-                                             select new PostViewModel
-                                             {
-                                                 Id = post.PK_Post,
-                                                 Material = new MaterialViewModel
-                                                 {
-                                                     Type = post.tbl_Material.Type
+                List<JObject> posts = new List<JObject>();
 
-                                                 },
-                                                 Giver = new UserViewModel
-                                                 {
-                                                     Firstname = post.tbl_User.Firstname,
-                                                     Surname = post.tbl_User.Surname,
-                                                     Phone = post.tbl_User.Phone,
-                                                     Email = post.tbl_User.Email,
-                                                     IsPanter = (bool)post.tbl_User.IsPanter,
-                                                     Address = new AddressViewModel()
-                                                     {
-                                                         Address = post.tbl_User.tbl_Address.Address,
-                                                         City = new CityViewModel()
-                                                         {
-                                                             City = post.tbl_User.tbl_Address.tbl_City.City,
-                                                             Zip = post.tbl_User.tbl_Address.tbl_City.Zip
-                                                         }
-                                                     }
-                                                 },
+                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                foreach (var post in allNonClaimedPosts)
+                {
+                    JObject postJson = new JObject();
+                    postJson.Add("Id", post.PK_Post);
+                    var giver = db.tbl_User.FirstOrDefault(user => user.PK_User == post.FK_Giver);
+                    var address = db.tbl_Address.FirstOrDefault(giverAddress => giverAddress.PK_Address == giver.FK_Address);
+                    var city = db.tbl_City.FirstOrDefault(giverAdressZipcode => giverAdressZipcode.PK_City == address.FK_City);
+                    string fullAddress = string.Format("{0}, {1} {2}", address.Address, city.Zip, city.City);
+                    postJson.Add("Address", fullAddress);
+                    var quantity = db.tbl_Quantity.FirstOrDefault(postsQuantity => post.FK_Quantity == postsQuantity.PK_Quantity);
+                    postJson.Add("Quantity", FormatQuantity(quantity));
+                    var material = db.tbl_Material.FirstOrDefault(postsMaterial => post.FK_Material == postsMaterial.PK_Material);
+                    postJson.Add("Material", material.Type);
+                    string date = post.Date.Value.ToString("dd-MM-yyyy");
+                    postJson.Add("Date", date);
+                    string periode = FormatTimeSpan(post);
+                    postJson.Add("PeriodForPickup", periode);
+                    postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
 
-                                                 Quantity = post.Quantity,
-                                                 Address = post.Address,
-                                                 StartTime = (int)post.StartTime,
-                                                 EndTime = (int)post.EndTime,
-                                                 Claimed = (bool)post.Claimed,
-                                                 Completed = (bool)post.Completed,
-                                                 Date = post.Date.ToString()
-                                             }).ToList();
-
-                //List<JObject> lollern = new List<JObject>();
-
-                //List<JObject> lollern = new List<JObject>();
-
-
-                //var postststs = db.tbl_Post.Select(c => c).ToList();
-
-                //foreach (var item in postststs)
-                //{
-                //    JObject j = new JObject();
-                //    j.Add(item.Claimed);
-                //    j.Add(item.Date);
-                //    lollern.Add(j);
-                //}
-
-
-                //return lollern;
+                    if (city.Zip.Equals(zipcode));
+                        posts.Add(postJson);
+                }
                 return posts;
-
             }
+        }
+    */
+        private string FormatQuantity(tbl_Quantity quantity)
+        {
+            if(quantity == null)
+            {
+                throw new Exception("Quantity object er uventet tomt!");
+            }
+
+            // Hvis sække og kasser er 0
+            if (quantity.Sacks == 0 && quantity.Cases == 0)
+                return String.Format("{0} pose(r)", quantity.Bags);
+            // Hvis poser og kasser er 0
+            else if (quantity.Bags == 0 && quantity.Cases == 0)
+                return String.Format("{0} sæk(ke)", quantity.Sacks);
+            // Hvis poser og sække er 0
+            else if (quantity.Bags == 0 && quantity.Sacks == 0)
+                return String.Format("{0} kasse(r)", quantity.Cases);
+      
+            // Hvis kun poser er 0
+            else if (quantity.Bags == 0 )
+                return String.Format("{0} sæk(ke) og {1} kasse(r)", quantity.Sacks, quantity.Cases);
+            // Hvis kun sække er 0
+            else if (quantity.Sacks == 0)
+                return String.Format("{0} pose(r) og {1} kasse(r)", quantity.Bags, quantity.Cases);
+            // Hvis kun kasser er 0
+            else if (quantity.Cases == 0)
+                return String.Format("{0} pose(r) og {1} sæk(ke)", quantity.Bags, quantity.Sacks);
+            else
+                return String.Format("{0} pose(r), {1} sæk(ke) og {2} kasse(r)", quantity.Bags, quantity.Sacks, quantity.Cases);
+        }
+
+        public string FormatTimeSpan(tbl_Post post)
+        {
+            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString();
+            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString();
+
+            return string.Format("{0} - {1}", startTime, endTime);
         }
 
         // GET api/<controller>/5
