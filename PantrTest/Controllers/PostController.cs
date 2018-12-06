@@ -22,10 +22,10 @@ namespace PantrTest.Controllers
         public List<JObject> Get()
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-            {                   
-                    List<JObject> posts = new List<JObject>();
+            {
+                List<JObject> posts = new List<JObject>();
 
-                    List<tbl_Post> allNonClaimedPosts =  db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false).ToList();
                 foreach (var post in allNonClaimedPosts)
                 {
                     JObject postJson = new JObject();
@@ -46,9 +46,9 @@ namespace PantrTest.Controllers
 
 
                     posts.Add(postJson);
-                } 
+                }
                 return posts;
-            }   
+            }
         }
         /**
         [HttpGet]
@@ -88,7 +88,7 @@ namespace PantrTest.Controllers
     */
         private string FormatQuantity(tbl_Quantity quantity)
         {
-            if(quantity == null)
+            if (quantity == null)
             {
                 throw new Exception("Quantity object er uventet tomt!");
             }
@@ -102,9 +102,9 @@ namespace PantrTest.Controllers
             // Hvis poser og sække er 0
             else if (quantity.Bags == 0 && quantity.Sacks == 0)
                 return String.Format("{0} kasse(r)", quantity.Cases);
-      
+
             // Hvis kun poser er 0
-            else if (quantity.Bags == 0 )
+            else if (quantity.Bags == 0)
                 return String.Format("{0} sæk(ke) og {1} kasse(r)", quantity.Sacks, quantity.Cases);
             // Hvis kun sække er 0
             else if (quantity.Sacks == 0)
@@ -169,61 +169,73 @@ namespace PantrTest.Controllers
 
         [HttpGet]
         [Route("api/post/getuserspost/{userId:int}")]
-        public PostViewModel GetUsersPost(int userId)
+        public HttpResponseMessage GetUsersPost(int userId)
         {
-            PantrDatabaseEntities db = new PantrDatabaseEntities();
-            tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
-            DateTime date = (DateTime)postFromDb.Date;
-            PostViewModel post = null;
-            if (postFromDb != null)
+
+            JObject post = new JObject();
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                post = new PostViewModel()
+                tbl_Post postFromDb = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == userId);
+
+                if (postFromDb != null)
                 {
-                    Id = postFromDb.PK_Post,
-                    Material = new MaterialViewModel
-                    {
-                        Type = postFromDb.tbl_Material.Type
-                    },
+                    tbl_User user = db.tbl_User.Find(userId);
+                    DateTime date = (DateTime)postFromDb.Date;
 
-                    Claimed = (bool)postFromDb.Claimed,
-                    Completed = (bool)postFromDb.Completed,
-                    Date = date.ToString("dd/MM/yyyy")
-                };
+                    post.Add("Id", postFromDb.PK_Post);
+                    post.Add("Material", postFromDb.tbl_Material.Type);
+                    post.Add("Material", postFromDb.tbl_Material.Type);
+                    post.Add("Quantity", postFromDb.Quantity);
+                    post.Add("Date", date.ToString("dd/MM/yyyy"));
+                    post.Add("StartTime", ConvertTime((int)postFromDb.StartTime));
+                    post.Add("EndTime", ConvertTime((int)postFromDb.EndTime));
+                    post.Add("Claimed", postFromDb.Claimed);
+                    post.Add("Completed", postFromDb.Completed);
+                    post.Add("Address", user.tbl_Address.Address + ", " +
+                                     user.tbl_Address.tbl_City.City + " " +
+                                     user.tbl_Address.tbl_City.Zip);
 
-
-            }
-            return post;
+                    response = Request.CreateResponse(HttpStatusCode.OK, post);
+                }
+                else
+                {
+                    response = Request.CreateResponse(HttpStatusCode.NotFound, post);
+                }
+            };
+            return response;
         }
 
 
         // POST api/<controller>
         [HttpPost]
         [Route("api/post")]
-        public async Task<HttpResponseMessage> Post (HttpRequestMessage request)
+        public async Task<HttpResponseMessage> Post(HttpRequestMessage request)
         {
             var jObject = await request.Content.ReadAsAsync<JObject>();
-            Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
+            PostViewModel newPost = JsonConvert.DeserializeObject<PostViewModel>(jObject.ToString());
             var message = Request.CreateResponse(HttpStatusCode.Accepted);
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 tbl_Material material = null;
-                if (item.Material.Type != null)
-                { 
-                    material = db.tbl_Material.FirstOrDefault(m => m.Type == item.Material.Type);
+                if (newPost.Material.Type != null)
+                {
+                    material = db.tbl_Material.FirstOrDefault(m => m.Type == newPost.Material.Type);
                 }
 
-                tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == 1); //Ændres til requests user
-                DateTime date = DateTime.Parse(item.Date);
+                tbl_User giver = db.tbl_User.FirstOrDefault(u => u.PK_User == newPost.Giver.Id); //Ændres til requests user
+                DateTime date = DateTime.Parse(newPost.Date);
 
                 tbl_Post post = new tbl_Post
                 {
                     tbl_Material = material,
-                    Quantity = item.Quantity,
+                    //Quantity = newPost.Quantity,
                     tbl_User = giver,
                     Address = "",
-                    StartTime = item.StartTime,
-                    EndTime = item.EndTime,
+                    StartTime = newPost.StartTime,
+                    EndTime = newPost.EndTime,
                     Claimed = false,
                     Completed = false,
                     Date = date
@@ -231,11 +243,11 @@ namespace PantrTest.Controllers
 
                 db.tbl_Post.Add(post);
                 db.SaveChanges();
-                return request.CreateResponse(HttpStatusCode.OK, item);
+                return request.CreateResponse(HttpStatusCode.OK, newPost);
             }
         }
 
-        public int ConvertTimeSpanToInteger (TimeSpan time)
+        public int ConvertTimeSpanToInteger(TimeSpan time)
         {
             int hours = time.Hours;
             int minutes = time.Minutes;
@@ -243,12 +255,14 @@ namespace PantrTest.Controllers
             return minutesAfterMidnight;
         }
 
-        public TimeSpan ConvertIntegerToTimeSpan (int minutesAfterMidnight) {
+        public string ConvertTime(int minutesAfterMidnight)
+        {
 
             int hours = minutesAfterMidnight / 60;
             int minutes = minutesAfterMidnight % 60;
-
-            TimeSpan time = new TimeSpan(hours, minutes, 0);
+            TimeSpan timeSpan = new TimeSpan(hours, minutes, 0);
+            string[] timeArr = timeSpan.ToString().Split(':');
+            string time = timeArr[0] + ":" + timeArr[1];
 
 
             //TimeSpan time = midnight.Add(hours)
@@ -262,14 +276,14 @@ namespace PantrTest.Controllers
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 var ExistingPost = db.tbl_Post.FirstOrDefault(p => id == p.PK_Post);
-                
-                if(ExistingPost != null)
+
+                if (ExistingPost != null)
                 {
                     ExistingPost.Claimed = true;
 
                     db.SaveChanges();
                     Console.WriteLine("Vi kom sgu til enden!");
-                
+
                 }
                 else
                 {
@@ -277,14 +291,14 @@ namespace PantrTest.Controllers
                 }
 
                 return Ok();
-        
+
 
             }
         }
 
         [HttpPut]
         [Route("api/updatepost/{id:int}")]
-        public async Task<HttpResponseMessage> UpdatePost (int id, HttpRequestMessage request)
+        public async Task<HttpResponseMessage> UpdatePost(int id, HttpRequestMessage request)
         {
             var jObject = await request.Content.ReadAsAsync<JObject>();
             Item item = JsonConvert.DeserializeObject<Item>(jObject.ToString());
@@ -326,6 +340,13 @@ namespace PantrTest.Controllers
                 if (post == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                tbl_Transaction transaction = db.tbl_Transaction.FirstOrDefault(t => t.FK_Panter == post.PK_Post);
+
+                if (transaction != null)
+                {
+                    transaction.Annulled = true;
                 }
                 db.tbl_Post.Remove(post);
                 db.SaveChanges();
