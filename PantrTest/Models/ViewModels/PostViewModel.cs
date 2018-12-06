@@ -10,7 +10,7 @@ namespace PantrTest.Models.ViewModels
         public int Id { get; set; }
         public MaterialViewModel Material { get; set; }
         public UserViewModel Giver { get; set; }
-        public string Quantity { get; set; }
+        public QuantityViewModel Quantity { get; set; }
         public string Address { get; set; } 
         public int StartTime { get; set; }
         public int EndTime { get; set; }
