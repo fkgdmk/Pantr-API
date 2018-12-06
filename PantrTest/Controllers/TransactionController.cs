@@ -34,10 +34,11 @@ namespace PantrTest.Controllers
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                var fromDb = db.tbl_Transaction.Where(c => c.FK_Panter == userId).Select(p => p.tbl_Post).ToList();
-                if (fromDb != null)
+                var userReservationsFromDb = db.tbl_Transaction.Where(c => c.FK_Panter == userId && c.Annulled == false)
+                                                               .Select(p => p.tbl_Post).ToList();
+                if (userReservationsFromDb != null)
                 {
-                    foreach (var item in fromDb)
+                    foreach (var item in userReservationsFromDb)
                     {
                         TimeSpan start = TimeSpan.FromMinutes((int)item.StartTime);
                         TimeSpan end = TimeSpan.FromMinutes((int)item.EndTime);
@@ -52,9 +53,13 @@ namespace PantrTest.Controllers
                         j.Add("Date", date.ToString("dd-MM-yyyy"));
                         j.Add("Material", item.tbl_Material.Type);
                         j.Add("Id", item.PK_Post);
+                        
                         reservations.Add(j);
                     }
                     message = Request.CreateResponse(HttpStatusCode.OK, reservations);
+                } else
+                {
+                    message = Request.CreateResponse(HttpStatusCode.BadRequest);
                 }
             }
 
@@ -71,13 +76,14 @@ namespace PantrTest.Controllers
             HttpResponseMessage message = null;
 
             var jObject = await data.Content.ReadAsAsync<JObject>();    
-            int postId = (int)jObject["Id"];
+            int postId = (int)jObject["postId"];
+            int panterId = (int)jObject["panterId"];
 
             try
             {
                 using (PantrDatabaseEntities db = new PantrDatabaseEntities())
                 {
-                    var transactionToDelete = db.tbl_Transaction.FirstOrDefault(c => c.FK_Post == postId);
+                    var transactionToDelete = db.tbl_Transaction.FirstOrDefault(c => c.FK_Panter == panterId && c.FK_Post == postId);
 
                     transactionToDelete.tbl_Post.Claimed = false;
                     transactionToDelete.Annulled = true;
