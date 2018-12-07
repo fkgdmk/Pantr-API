@@ -49,7 +49,9 @@ namespace PantrTest.Controllers
                         j.Add("Address", item.tbl_User.tbl_Address.Address + ", " +
                                          item.tbl_User.tbl_Address.tbl_City.Zip + " " +
                                          item.tbl_User.tbl_Address.tbl_City.City);
-                        j.Add("PeriodForPickup", "Kl " + start.ToString("hh':'mm") + " - " + end.ToString("hh':'mm"));
+                        //j.Add("PeriodForPickup", "Kl " + start.ToString("hh':'mm") + " - " + end.ToString("hh':'mm"));
+                        j.Add("StartTime", start.ToString("hh':'mm"));
+                        j.Add("EndTime", end.ToString("hh':'mm"));
                         j.Add("Date", date.ToString("dd-MM-yyyy"));
                         j.Add("Material", item.tbl_Material.Type);
                         j.Add("Id", item.PK_Post);
