@@ -32,31 +32,27 @@ namespace PantrTest.Controllers
         public async Task<HttpResponseMessage> Post(HttpRequestMessage data)
         {
             var jObject = await data.Content.ReadAsAsync<JObject>();
-            LoginViewModel login = JsonConvert.DeserializeObject<LoginViewModel>(jObject.ToString());
+            tbl_Login login = JsonConvert.DeserializeObject<tbl_Login>(jObject.ToString());
             HttpResponseMessage message = null;
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
+                //forsøger at finde bruger i DB, der har det brugernavn der logges ind med
                 var userFromDb = db.tbl_User.FirstOrDefault(c => c.tbl_Login.Username == login.Username);
 
+                //hvis brugeren findes, tjekkes der om passwordet matcher og sætter derefter variable i JObject
+                //som skal bruges i xamarin
                 if (userFromDb != null && userFromDb.tbl_Login.Password.Equals(login.Password))
                 {
                     JObject authenticatedUser = new JObject();
                     authenticatedUser.Add("ID", userFromDb.PK_User);
-                    authenticatedUser.Add("Firstname", userFromDb.Firstname);
-                    authenticatedUser.Add("Surname", userFromDb.Surname);
-                    authenticatedUser.Add("Phone", userFromDb.Phone);
-                    authenticatedUser.Add("Email", userFromDb.Email);
-                    authenticatedUser.Add("IsPanter", userFromDb.IsPanter);
-                    authenticatedUser.Add("Address", userFromDb.tbl_Address.Address + ", " + 
-                                                     userFromDb.tbl_Address.tbl_City.City + " " +
-                                                     userFromDb.tbl_Address.tbl_City.Zip);
                     authenticatedUser.Add("Username", userFromDb.tbl_Login.Username);
 
                     message = Request.CreateResponse(HttpStatusCode.OK, authenticatedUser);
 
                 }
+                //Hvis ikke den findes returneres NotFound
                 else
-                    message = Request.CreateResponse(HttpStatusCode.NotFound, login);
+                    message = Request.CreateResponse(HttpStatusCode.NotFound);
             }
             return message;
         }
