@@ -17,15 +17,18 @@ namespace PantrTest.Controllers
 {
     public class PostController : ApiController
     {
+        
         // GET api/<controller>
         [Route("api/posts")]
         public List<JObject> Get()
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-            {                   
-                    List<JObject> posts = new List<JObject>();
+            {
+                HttpResponseMessage message = null;
 
-                    List<tbl_Post> allNonClaimedPosts =  db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                List<JObject> posts = new List<JObject>();
+
+                List<tbl_Post> allNonClaimedPosts =  db.tbl_Post.Where(c => c.Claimed == false).ToList();
                 foreach (var post in allNonClaimedPosts)
                 {
                     JObject postJson = new JObject();
@@ -50,16 +53,17 @@ namespace PantrTest.Controllers
                 return posts;
             }   
         }
-        /**
+            
+        
         [HttpGet]
-        [Route("api/posts/{zipcode:string}")]
+        [Route("api/posts/{zipcode}")]
         public List<JObject> Get(string zipcode)
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 List<JObject> posts = new List<JObject>();
 
-                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false && c.tbl_User.tbl_Address.tbl_City.Zip.Equals(zipcode)).ToList();
                 foreach (var post in allNonClaimedPosts)
                 {
                     JObject postJson = new JObject();
@@ -79,13 +83,12 @@ namespace PantrTest.Controllers
                     postJson.Add("PeriodForPickup", periode);
                     postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
 
-                    if (city.Zip.Equals(zipcode));
-                        posts.Add(postJson);
+                    posts.Add(postJson);
                 }
                 return posts;
             }
         }
-    */
+    
         private string FormatQuantity(tbl_Quantity quantity)
         {
             if(quantity == null)
