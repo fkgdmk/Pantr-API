@@ -88,27 +88,61 @@ namespace PantrTest.Controllers
             string sacksForm = quantity.Sacks == 1 ? "sæk" : "sække";
             string casesForm = quantity.Cases == 1 ? "kasse" : "kasser";
 
-            // Hvis sække og kasser er 0
-            if (quantity.Sacks == 0 && quantity.Cases == 0)
-                return String.Format("{0} {1}", quantity.Bags, bagsForm);
-            // Hvis poser og kasser er 0
-            else if (quantity.Bags == 0 && quantity.Cases == 0)
-                return String.Format("{0} {1}", quantity.Sacks, sacksForm);
-            // Hvis poser og sække er 0
-            else if (quantity.Bags == 0 && quantity.Sacks == 0)
-                return String.Format("{0} {1}", quantity.Cases, casesForm);
+            Dictionary<int, string> keyvalueFormat = new Dictionary<int, string>()
+            {
+                {quantity.Bags, bagsForm},
+                {quantity.Sacks, sacksForm},
+                {quantity.Cases, casesForm}
+            };
 
-            // Hvis kun poser er 0
-            else if (quantity.Bags == 0)
-                return String.Format("{0} {1} og {2} {3}", quantity.Sacks, sacksForm, quantity.Cases, casesForm);
-            // Hvis kun sække er 0
-            else if (quantity.Sacks == 0)
-                return String.Format("{0} {1} og {2} {3}", quantity.Bags, bagsForm, quantity.Cases, casesForm);
-            // Hvis kun kasser er 0
-            else if (quantity.Cases == 0)
-                return String.Format("{0} {1} og {2} {3}", quantity.Bags, bagsForm, quantity.Sacks, sacksForm);
-            else
-                return String.Format("{0} {1}, {2} {3} og {4} {5}", quantity.Bags, bagsForm, quantity.Sacks, sacksForm, quantity.Cases, casesForm);
+            string formattedQuantities = "";
+            foreach (KeyValuePair<int, string> item in keyvalueFormat)
+            {
+                if(item.Key > 0)
+                {
+                    formattedQuantities += item.Key + " " + item.Value + ", ";
+                }
+            }
+            return formattedQuantities = formattedQuantities.Substring(0, formattedQuantities.Length - 2);
+
+            ////Hvis sække og kasser er 0
+            //if (quantity.Sacks == 0 && quantity.Cases == 0)
+            //    return $"{quantity.Bags} {bagsForm}";
+            //// Hvis poser og kasser er 0
+            //else if (quantity.Bags == 0 && quantity.Cases == 0)
+            //    return $"{quantity.Sacks} {sacksForm}";
+            //// Hvis poser og sække er 0
+            //else if (quantity.Bags == 0 && quantity.Sacks == 0)
+            //    return $"{quantity.Cases} {casesForm}";
+
+            //// Hvis kun poser er 0
+            //else if (quantity.Bags == 0)
+            //    return $"{quantity.Sacks} {sacksForm} og {quantity.Cases} {casesForm}";
+            //// Hvis kun sække er 0
+            //else if (quantity.Sacks == 0)
+            //    return $"{quantity.Bags} {bagsForm} og {quantity.Cases} {casesForm}";
+            //// Hvis kun kasser er 0
+            //else if (quantity.Cases == 0)
+            //    return $"{quantity.Bags} {bagsForm} og {quantity.Sacks} {sacksForm}";
+            //else
+            //    return $"{quantity.Bags} {bagsForm}, {quantity.Sacks} {sacksForm} og {quantity.Cases} {casesForm}";
+
+
+
+
+
+            //Super sprød kode som kan bruges i C# 8.0 når det engang udkommer
+            //Switch expressions hedder det
+            //return (quantity.Bags, quantity.Sacks, quantity.Cases) switch
+            //{
+            //    (int bags, int sacks, int cases) => $"{bags} {bagsForm}, {sacks} {sacksForm} og {cases} {casesForm}",
+            //    (int bags, int sacks, 0        ) => $"{bags} {bagsForm} og {sacks} {sacksForm}",
+            //    (int bags, 0        , int cases) => $"{bags} {bagsForm} og {cases} {casesForm}",
+            //    (0       , int sacks, int cases) => $"{sacks} {sacksForm} og {cases} {casesForm}"
+            //    (int bags, 0        , 0        ) => $"{bags} {bagsForm}",
+            //    (0       , int sacks, 0        ) => $"{sacks} {sacksForm}",
+            //    (0       , 0        , int cases) => $"{cases} {casesForm}"
+            //}
         }
 
         // POST api/<controller>
