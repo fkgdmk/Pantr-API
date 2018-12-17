@@ -79,50 +79,60 @@ namespace PantrTest.Controllers
 
         }
 
-        // POST api/values
+        //Registrer bruger
         public async Task<HttpResponseMessage> Post(HttpRequestMessage registerData)
         {
             var jObject = await registerData.Content.ReadAsAsync<JObject>();
-            UserViewModel registerUser = JsonConvert.DeserializeObject<UserViewModel>(jObject.ToString());
+            tbl_User registerUser = JsonConvert.DeserializeObject<tbl_User>(jObject.ToString());
 
             HttpResponseMessage message = null;
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                var city = db.tbl_City.FirstOrDefault(c => c.Zip == registerUser.Address.City.Zip).PK_City;
-                tbl_Login registerLogin = new tbl_Login()
+                try
                 {
-                    Username = registerUser.Login.Username,
-                    Password = registerUser.Login.Password
-                };
+                    //Fordi man kun angiver sit postnummer i xamarin finder vi her den by som matcher postnummeret
+                    //og returnerer primary key
+                    var city = db.tbl_City.FirstOrDefault(c => c.Zip == registerUser.tbl_Address.tbl_City.Zip).PK_City;
 
-                tbl_Address registerAddress = new tbl_Address()
+                    //Opretter objecter med de korrekte værdier og tilføjer den nye bruger til databasse
+                    tbl_Login registerLogin = new tbl_Login()
+                    {
+                        Username = registerUser.tbl_Login.Username,
+                        Password = registerUser.tbl_Login.Password
+                    };
+
+                    tbl_Address registerAddress = new tbl_Address()
+                    {
+                        Address = registerUser.tbl_Address.Address,
+                        FK_City = city
+                    };
+
+                    //EF tillader man bare refererer forbindelsen mellem tabeller (tbl_Adress og tbl_Login)
+                    //og sætter dem til de nye objekter. Så opdaterer EF selv med de rigtige foreign keys
+                    tbl_User newUser = new tbl_User()
+                    {
+                        Firstname = registerUser.Firstname,
+                        Surname = registerUser.Surname,
+                        Email = registerUser.Email,
+                        Phone = registerUser.Phone,
+                        tbl_Address = registerAddress,
+                        IsPanter = registerUser.IsPanter,
+                        tbl_Login = registerLogin
+                    };
+
+                    db.tbl_User.Add(newUser);
+                    db.SaveChanges();
+
+                    message = Request.CreateResponse(HttpStatusCode.OK);
+
+                }
+                //Hvis fejl, sæt statuscode til andet en OK (her badrequest)
+                catch (Exception e)
                 {
-                    Address = registerUser.Address.Address,
-                    FK_City = city
-                };
+                    message = Request.CreateResponse(HttpStatusCode.BadRequest);
+                }                
 
-                db.tbl_Login.Add(registerLogin);
-                db.tbl_Address.Add(registerAddress);
-                db.SaveChanges();
-
-                tbl_User newUser = new tbl_User()
-                {
-                    Firstname = registerUser.Firstname,
-                    Surname = registerUser.Surname,
-                    Email = registerUser.Email,
-                    Phone = registerUser.Phone,
-                    FK_Address = db.tbl_Address.FirstOrDefault(c => c.Address == registerAddress.Address).PK_Address,
-                    IsPanter = registerUser.IsPanter,
-                    FK_Login = db.tbl_Login.FirstOrDefault(c => c.Username == registerLogin.Username).PK_Login
-                };
-
-
-
-                db.tbl_User.Add(newUser);
-                db.SaveChanges();
-                //I stedet for at returnere newUser som poco, skal det måske laves som JObject(se logincontroller)
-                message = Request.CreateResponse(HttpStatusCode.OK, newUser);
             }
 
             return message;
