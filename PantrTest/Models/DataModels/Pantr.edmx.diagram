@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="aec8f8f7324545d08c22851034ed86ca" Name="Diagram1">
+      <Diagram DiagramId="aec8f8f7324545d08c22851034ed86ca" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Address" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Material" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PantrDatabaseModel.tbl_Report" Width="1.5" PointX="7.5" PointY="8.25" IsExpanded="true" />

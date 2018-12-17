@@ -17,39 +17,45 @@ namespace PantrTest.Controllers
 {
     public class PostController : ApiController
     {
+        
         // GET api/<controller>
-        //[Route("api/posts")]
-        //public List<JObject> Get()
-        //{
-        //    using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-        //    {
-        //        List<JObject> posts = new List<JObject>();
 
-        //        List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false).ToList();
-        //        foreach (var post in allNonClaimedPosts)
-        //        {
-        //            JObject postJson = new JObject();
-        //            postJson.Add("Id", post.PK_Post);
-        //            var giver = db.tbl_User.FirstOrDefault(user => user.PK_User == post.FK_Giver);
-        //            var address = db.tbl_Address.FirstOrDefault(giverAddress => giverAddress.PK_Address == giver.FK_Address);
-        //            var zipcode = db.tbl_City.FirstOrDefault(giverAdressZipcode => giverAdressZipcode.PK_City == address.FK_City);
-        //            postJson.Add("Address", address.Address + ", " + zipcode.Zip + " " + zipcode.City);
-        //            var quantity = db.tbl_Quantity.FirstOrDefault(postsQuantity => post.FK_Quantity == postsQuantity.PK_Quantity);
-        //            postJson.Add("Quantity", FormatQuantity(quantity));
-        //            var material = db.tbl_Material.FirstOrDefault(postsMaterial => post.FK_Material == postsMaterial.PK_Material);
-        //            postJson.Add("Material", material.Type);
-        //            string date = post.Date.Value.ToString("dd-MM-yyyy");
-        //            postJson.Add("Date", date);
-        //            string periode = FormatTimeSpan(post);
-        //            postJson.Add("PeriodForPickup", periode);
-        //            postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
+        [Route("api/posts")]
+        public List<JObject> Get()
+        {
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                HttpResponseMessage message = null;
+
+                List<JObject> posts = new List<JObject>();
+
+                List<tbl_Post> allNonClaimedPosts =  db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                foreach (var post in allNonClaimedPosts)
+                {
+                    JObject postJson = new JObject();
+                    postJson.Add("Id", post.PK_Post);
+                    var giver = db.tbl_User.FirstOrDefault(user => user.PK_User == post.FK_Giver);
+                    var address = db.tbl_Address.FirstOrDefault(giverAddress => giverAddress.PK_Address == giver.FK_Address);
+                    var zipcode = db.tbl_City.FirstOrDefault(giverAdressZipcode => giverAdressZipcode.PK_City == address.FK_City);
+                    postJson.Add("Address", address.Address + ", " + zipcode.Zip + " " + zipcode.City);
+                    var quantity = db.tbl_Quantity.FirstOrDefault(postsQuantity => post.FK_Quantity == postsQuantity.PK_Quantity);
+                    postJson.Add("Quantity", FormatQuantity(quantity));
+                    var material = db.tbl_Material.FirstOrDefault(postsMaterial => post.FK_Material == postsMaterial.PK_Material);
+                    postJson.Add("Material", material.Type);
+                    string date = post.Date.Value.ToString("dd-MM-yyyy");
+                    postJson.Add("Date", date);
+                    string periode = FormatTimeSpan(post);
+                    postJson.Add("PeriodForPickup", periode);
+                    postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
 
 
-        //            posts.Add(postJson);
-        //        }
-        //        return posts;
-        //    }
-        //}
+                    posts.Add(postJson);
+                } 
+                return posts;
+            }   
+        }
+            
+
         
         [HttpGet]
         [Route("api/posts/{zipcode}")]
@@ -59,7 +65,7 @@ namespace PantrTest.Controllers
             {
                 List<JObject> posts = new List<JObject>();
 
-                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false).ToList();
+                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false && c.tbl_User.tbl_Address.tbl_City.Zip.Equals(zipcode)).ToList();
                 foreach (var post in allNonClaimedPosts)
                 {
                     JObject postJson = new JObject();
@@ -84,8 +90,7 @@ namespace PantrTest.Controllers
                     postJson.Add("PeriodForPickup", periode);
                     postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
 
-                    if (city.Zip.Equals(zipcode)) ;
-                    posts.Add(postJson);
+
                 }
                 return posts;
             }
