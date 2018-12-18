@@ -32,6 +32,7 @@ namespace PantrTest.Controllers
                 List<tbl_Post> allNonClaimedPosts =  db.tbl_Post.Where(c => c.Claimed == false).ToList();
                 foreach (var post in allNonClaimedPosts)
                 {
+                    
                     JObject postJson = new JObject();
                     postJson.Add("Id", post.PK_Post);
                     var giver = db.tbl_User.FirstOrDefault(user => user.PK_User == post.FK_Giver);
