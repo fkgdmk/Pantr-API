@@ -21,7 +21,7 @@ namespace PantrTest.Controllers
         // GET api/<controller>
 
         [Route("api/posts")]
-        public List<JObject> Get()
+        public HttpResponseMessage Get()
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
@@ -50,8 +50,10 @@ namespace PantrTest.Controllers
 
 
                     posts.Add(postJson);
-                } 
-                return posts;
+                }
+                    message = Request.CreateResponse(HttpStatusCode.OK, posts);
+            
+                return message;
             }   
         }
             
@@ -59,11 +61,12 @@ namespace PantrTest.Controllers
         
         [HttpGet]
         [Route("api/posts/{zipcode}")]
-        public List<JObject> Get(string zipcode)
+        public HttpResponseMessage Get(string zipcode)
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
                 List<JObject> posts = new List<JObject>();
+                HttpResponseMessage message = null;
 
                 List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false && c.tbl_User.tbl_Address.tbl_City.Zip.Equals(zipcode)).ToList();
                 foreach (var post in allNonClaimedPosts)
@@ -90,9 +93,9 @@ namespace PantrTest.Controllers
                     postJson.Add("PeriodForPickup", periode);
                     postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
 
-
                 }
-                return posts;
+                message = Request.CreateResponse(HttpStatusCode.OK, posts);
+                return message;
             }
         }
 
