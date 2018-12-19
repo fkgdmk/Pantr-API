@@ -5,21 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using PantrTest.Models.ViewModels;
-using System.Web;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using PantrTest.Models;
 
 namespace PantrTest.Controllers
 {
     public class PostController : ApiController
     {
-        
-        // GET api/<controller>
-
         [Route("api/posts")]
         public HttpResponseMessage Get()
         {
@@ -60,8 +53,6 @@ namespace PantrTest.Controllers
                 return message;
             }   
         }
-            
-
         
         [HttpGet]
         [Route("api/posts/{zipcode}")]
@@ -102,87 +93,6 @@ namespace PantrTest.Controllers
                 return message;
             }
         }
-
-        private string FormatQuantity(tbl_Quantity quantity)
-        {
-            //Tjekker om typen skal stå i ental eller flertal
-            string bagsForm = quantity.Bags == 1 ? "pose" : "poser";
-            string sacksForm = quantity.Sacks == 1 ? "sæk" : "sække";
-            string casesForm = quantity.Cases == 1 ? "kasse" : "kasser";
-
-            // Hvis sække og kasser er 0
-            if (quantity.Sacks == 0 && quantity.Cases == 0)
-                return String.Format("{0} {1}", quantity.Bags, bagsForm);
-            // Hvis poser og kasser er 0
-            else if (quantity.Bags == 0 && quantity.Cases == 0)
-                return String.Format("{0} {1}", quantity.Sacks, sacksForm);
-            // Hvis poser og sække er 0
-            else if (quantity.Bags == 0 && quantity.Sacks == 0)
-                return String.Format("{0} {1}", quantity.Cases, casesForm);
-
-            // Hvis kun poser er 0
-            else if (quantity.Bags == 0)
-                return String.Format("{0} {1} og {2} {3}", quantity.Sacks, sacksForm, quantity.Cases, casesForm);
-            // Hvis kun sække er 0
-            else if (quantity.Sacks == 0)
-                return String.Format("{0} {1} og {2} {3}", quantity.Bags, bagsForm, quantity.Cases, casesForm);
-            // Hvis kun kasser er 0
-            else if (quantity.Cases == 0)
-                return String.Format("{0} {1} og {2} {3}", quantity.Bags, bagsForm, quantity.Sacks, sacksForm);
-            else
-                return String.Format("{0} {1}, {2} {3} og {4} {5}", quantity.Bags, bagsForm, quantity.Sacks, sacksForm, quantity.Cases, casesForm);
-        }
-
-        public string FormatTimeSpan(tbl_Post post)
-        {
-            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString().Substring(0, 5);
-            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString().Substring(0, 5);
-
-            return string.Format("{0} - {1}", startTime, endTime);
-        }
-
-        // GET api/<controller>/5
-        public PostViewModel Get(int id)
-        {
-            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-            {
-                tbl_Post foundPost = new tbl_Post();
-                foundPost = db.tbl_Post.Find(id);
-                PostViewModel post = new PostViewModel()
-                {
-                    Giver = new UserViewModel()
-                    {
-                        Firstname = foundPost.tbl_User.Firstname,
-                        Surname = foundPost.tbl_User.Surname,
-                        Phone = foundPost.tbl_User.Phone,
-                        Email = foundPost.tbl_User.Email,
-                        IsPanter = (bool)foundPost.tbl_User.IsPanter,
-                        Address = new AddressViewModel()
-                        {
-                            Address = foundPost.tbl_User.tbl_Address.Address,
-                            City = new CityViewModel()
-                            {
-                                City = foundPost.tbl_User.tbl_Address.tbl_City.City,
-                                Zip = foundPost.tbl_User.tbl_Address.tbl_City.Zip
-                            },
-                        },
-                    },
-                    Material = new MaterialViewModel()
-                    {
-                        Type = foundPost.tbl_Material.Type
-                    },
-                    //StartTime = ConvertIntegerToTimeSpan((int)foundPost.StartTime),
-                    //EndTime = ConvertIntegerToTimeSpan((int)foundPost.EndTime),
-                    Claimed = (bool)foundPost.Claimed,
-                    Address = foundPost.Address,
-                    //Date = (DateTime)foundPost.Date
-
-                };
-
-                return post;
-            }
-        }
-
 
         [HttpGet]
         [Route("api/post/getuserspost/{userId:int}")]
@@ -228,8 +138,6 @@ namespace PantrTest.Controllers
             return response;
         }
 
-
-        // POST api/<controller>
         [HttpPost]
         [Route("api/post")]
         public async Task<HttpResponseMessage> Post(HttpRequestMessage request)
@@ -275,7 +183,6 @@ namespace PantrTest.Controllers
             }
         }
 
-
         [HttpPut]
         [Route("api/updatepost/{id:int}")]
         public async Task<HttpResponseMessage> UpdatePost(int id, HttpRequestMessage request)
@@ -318,56 +225,6 @@ namespace PantrTest.Controllers
             return Request.CreateResponse(HttpStatusCode.Accepted);
         }
 
-        public int ConvertTimeSpanToInteger(TimeSpan time)
-        {
-            int hours = time.Hours;
-            int minutes = time.Minutes;
-            int minutesAfterMidnight = (hours * 60) + minutes;
-            return minutesAfterMidnight;
-        }
-
-        public string ConvertTime(int minutesAfterMidnight)
-        {
-
-            int hours = minutesAfterMidnight / 60;
-            int minutes = minutesAfterMidnight % 60;
-            TimeSpan timeSpan = new TimeSpan(hours, minutes, 0);
-            string[] timeArr = timeSpan.ToString().Split(':');
-            string time = timeArr[0] + ":" + timeArr[1];
-
-
-            //TimeSpan time = midnight.Add(hours)
-
-            return time;
-        }
-
-        // PUT api/<controller>/5
-        public IHttpActionResult Put(int id, [FromBody]string value)
-        {
-            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
-            {
-                var ExistingPost = db.tbl_Post.FirstOrDefault(p => id == p.PK_Post);
-
-                if (ExistingPost != null)
-                {
-                    ExistingPost.Claimed = false;
-
-                    db.SaveChanges();
-                    Console.WriteLine("Vi kom sgu til enden!");
-
-                }
-                else
-                {
-                    return NotFound();
-                }
-                return Ok();
-
-            }
-        }
-
- 
-
-        // DELETE api/<controller>/5
         public HttpResponseMessage Delete(int id)
         {
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
@@ -399,5 +256,70 @@ namespace PantrTest.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK);
         }
+
+        public int ConvertTimeSpanToInteger(TimeSpan time)
+        {
+            int hours = time.Hours;
+            int minutes = time.Minutes;
+            int minutesAfterMidnight = (hours * 60) + minutes;
+            return minutesAfterMidnight;
+        }
+
+        public string ConvertTime(int minutesAfterMidnight)
+        {
+
+            int hours = minutesAfterMidnight / 60;
+            int minutes = minutesAfterMidnight % 60;
+            TimeSpan timeSpan = new TimeSpan(hours, minutes, 0);
+            string[] timeArr = timeSpan.ToString().Split(':');
+            string time = timeArr[0] + ":" + timeArr[1];
+
+
+            //TimeSpan time = midnight.Add(hours)
+
+            return time;
+        }
+
+        private string FormatQuantity(tbl_Quantity quantity)
+        {
+            //Tjekker om typen skal stå i ental eller flertal
+            string bagsForm = quantity.Bags == 1 ? "pose" : "poser";
+            string sacksForm = quantity.Sacks == 1 ? "sæk" : "sække";
+            string casesForm = quantity.Cases == 1 ? "kasse" : "kasser";
+
+            // Hvis sække og kasser er 0
+            if (quantity.Sacks == 0 && quantity.Cases == 0)
+                return String.Format("{0} {1}", quantity.Bags, bagsForm);
+            // Hvis poser og kasser er 0
+            else if (quantity.Bags == 0 && quantity.Cases == 0)
+                return String.Format("{0} {1}", quantity.Sacks, sacksForm);
+            // Hvis poser og sække er 0
+            else if (quantity.Bags == 0 && quantity.Sacks == 0)
+                return String.Format("{0} {1}", quantity.Cases, casesForm);
+
+            // Hvis kun poser er 0
+            else if (quantity.Bags == 0)
+                return String.Format("{0} {1} og {2} {3}", quantity.Sacks, sacksForm, quantity.Cases, casesForm);
+            // Hvis kun sække er 0
+            else if (quantity.Sacks == 0)
+                return String.Format("{0} {1} og {2} {3}", quantity.Bags, bagsForm, quantity.Cases, casesForm);
+            // Hvis kun kasser er 0
+            else if (quantity.Cases == 0)
+                return String.Format("{0} {1} og {2} {3}", quantity.Bags, bagsForm, quantity.Sacks, sacksForm);
+            else
+                return String.Format("{0} {1}, {2} {3} og {4} {5}", quantity.Bags, bagsForm, quantity.Sacks, sacksForm, quantity.Cases, casesForm);
+        }
+
+        public string FormatTimeSpan(tbl_Post post)
+        {
+            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString().Substring(0, 5);
+            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString().Substring(0, 5);
+
+            return string.Format("{0} - {1}", startTime, endTime);
+        }
+
+
     }
+
+
 }

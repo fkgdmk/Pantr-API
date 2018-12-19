@@ -236,18 +236,6 @@
     <Compile Include="Models\DataModels\tbl_User.cs">
       <DependentUpon>Pantr.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Item.cs" />
-    <Compile Include="Models\ViewModels\AddressViewModel.cs" />
-    <Compile Include="Models\ViewModels\CityViewModel.cs" />
-    <Compile Include="Models\ViewModels\LoginViewModel.cs" />
-    <Compile Include="Models\ViewModels\PostQuantityViewModel.cs" />
-    <Compile Include="Models\ViewModels\QuantityTypeViewModel.cs" />
-    <Compile Include="Models\ViewModels\QuantityViewModel.cs" />
-    <Compile Include="Models\ViewModels\ReportViewModel.cs" />
-    <Compile Include="Models\ViewModels\UserViewModel.cs" />
-    <Compile Include="Models\ViewModels\MaterialViewModel.cs" />
-    <Compile Include="Models\ViewModels\PostViewModel.cs" />
-    <Compile Include="Models\ViewModels\TransactionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
