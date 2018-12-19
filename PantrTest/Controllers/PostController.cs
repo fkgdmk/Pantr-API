@@ -102,11 +102,6 @@ namespace PantrTest.Controllers
 
         private string FormatQuantity(tbl_Quantity quantity)
         {
-            if (quantity == null)
-            {
-                throw new Exception("Quantity object er uventet tomt!");
-            }
-
             //Tjekker om typen skal stå i ental eller flertal
             string bagsForm = quantity.Bags == 1 ? "pose" : "poser";
             string sacksForm = quantity.Sacks == 1 ? "sæk" : "sække";
@@ -193,6 +188,7 @@ namespace PantrTest.Controllers
 
             JObject post = new JObject();
             HttpResponseMessage response = new HttpResponseMessage();
+
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
@@ -350,7 +346,7 @@ namespace PantrTest.Controllers
 
                 if (ExistingPost != null)
                 {
-                    ExistingPost.Claimed = true;
+                    ExistingPost.Claimed = false;
 
                     db.SaveChanges();
                     Console.WriteLine("Vi kom sgu til enden!");
@@ -360,9 +356,7 @@ namespace PantrTest.Controllers
                 {
                     return NotFound();
                 }
-
                 return Ok();
-
 
             }
         }
