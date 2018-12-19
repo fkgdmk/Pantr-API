@@ -137,8 +137,8 @@ namespace PantrTest.Controllers
 
         public string FormatTimeSpan(tbl_Post post)
         {
-            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString();
-            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString();
+            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString().Substring(0, 5);
+            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString().Substring(0, 5);
 
             return string.Format("{0} - {1}", startTime, endTime);
         }
