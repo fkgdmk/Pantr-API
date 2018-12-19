@@ -50,8 +50,9 @@ namespace PantrTest.Controllers
 
                     string periode = FormatTimeSpan(post);
                     postJson.Add("PeriodForPickup", periode);
+                    postJson.Add("StartTime", ConvertTime((int)post.StartTime));
+                    postJson.Add("EndTime", ConvertTime((int)post.EndTime));
                     postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
-
                     posts.Add(postJson);
                 }
                     message = Request.CreateResponse(HttpStatusCode.OK, posts);
@@ -104,11 +105,6 @@ namespace PantrTest.Controllers
 
         private string FormatQuantity(tbl_Quantity quantity)
         {
-            if (quantity == null)
-            {
-                throw new Exception("Quantity object er uventet tomt!");
-            }
-
             //Tjekker om typen skal stå i ental eller flertal
             string bagsForm = quantity.Bags == 1 ? "pose" : "poser";
             string sacksForm = quantity.Sacks == 1 ? "sæk" : "sække";
@@ -139,8 +135,8 @@ namespace PantrTest.Controllers
 
         public string FormatTimeSpan(tbl_Post post)
         {
-            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString();
-            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString();
+            string startTime = TimeSpan.FromMinutes(Convert.ToDouble(post.StartTime)).ToString().Substring(0, 5);
+            string endTime = TimeSpan.FromMinutes(Convert.ToDouble(post.EndTime)).ToString().Substring(0, 5);
 
             return string.Format("{0} - {1}", startTime, endTime);
         }
@@ -195,6 +191,7 @@ namespace PantrTest.Controllers
 
             JObject post = new JObject();
             HttpResponseMessage response = new HttpResponseMessage();
+
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
@@ -278,6 +275,7 @@ namespace PantrTest.Controllers
             }
         }
 
+
         [HttpPut]
         [Route("api/updatepost/{id:int}")]
         public async Task<HttpResponseMessage> UpdatePost(int id, HttpRequestMessage request)
@@ -352,7 +350,7 @@ namespace PantrTest.Controllers
 
                 if (ExistingPost != null)
                 {
-                    ExistingPost.Claimed = true;
+                    ExistingPost.Claimed = false;
 
                     db.SaveChanges();
                     Console.WriteLine("Vi kom sgu til enden!");
@@ -362,9 +360,7 @@ namespace PantrTest.Controllers
                 {
                     return NotFound();
                 }
-
                 return Ok();
-
 
             }
         }
