@@ -47,9 +47,9 @@ namespace PantrTest.Controllers
                     postJson.Add("Date", date);
                     string periode = FormatTimeSpan(post);
                     postJson.Add("PeriodForPickup", periode);
+                    postJson.Add("StartTime", ConvertTime((int)post.StartTime));
+                    postJson.Add("EndTime", ConvertTime((int)post.EndTime));
                     postJson.Add("DateAndPeriod", string.Format("{0}, {2} d. {1}", periode, date, post.Date.Value.DayOfWeek));
-
-
                     posts.Add(postJson);
                 }
                     message = Request.CreateResponse(HttpStatusCode.OK, posts);
@@ -69,7 +69,7 @@ namespace PantrTest.Controllers
                 List<JObject> posts = new List<JObject>();
                 HttpResponseMessage message = null;
 
-                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false && c.tbl_User.tbl_Address.tbl_City.Zip.Equals(zipcode)).ToList();
+                List<tbl_Post> allNonClaimedPosts = db.tbl_Post.Where(c => c.Claimed == false && c.tbl_User.tbl_Address.tbl_City.Zip.ToString().Equals(zipcode)).ToList();
                 foreach (var post in allNonClaimedPosts)
                 {
                     JObject postJson = new JObject();
@@ -271,6 +271,7 @@ namespace PantrTest.Controllers
                 return request.CreateResponse(HttpStatusCode.OK, newPost);
             }
         }
+
 
         [HttpPut]
         [Route("api/updatepost/{id:int}")]
