@@ -113,19 +113,22 @@ namespace PantrTest.Controllers
             string sacksForm = quantity.Sacks == 1 ? "sæk" : "sække";
             string casesForm = quantity.Cases == 1 ? "kasse" : "kasser";
 
-            Dictionary<int, string> keyvalueFormat = new Dictionary<int, string>()
+            Dictionary<string, int> keyvalueFormat = new Dictionary<string, int>()
             {
-                {quantity.Bags, bagsForm},
-                {quantity.Sacks, sacksForm},
-                {quantity.Cases, casesForm}
+                {bagsForm, quantity.Bags},
+                {sacksForm, quantity.Sacks},
+                {casesForm, quantity.Cases}
             };
 
             string formattedQuantities = "";
-            foreach (KeyValuePair<int, string> item in keyvalueFormat)
+            foreach (KeyValuePair<string, int> item in keyvalueFormat)
             {
-                if (item.Key > 0)
-                    formattedQuantities += item.Key + " " + item.Value + ", ";
+                if (item.Value > 0)
+                {
+                    formattedQuantities += item.Value + " " + item.Key + ", ";
+                }
             }
+
             return formattedQuantities = formattedQuantities.Substring(0, formattedQuantities.Length - 2);
         }
 

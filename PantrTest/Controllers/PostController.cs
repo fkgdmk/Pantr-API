@@ -53,7 +53,41 @@ namespace PantrTest.Controllers
                 return message;
             }   
         }
-        
+
+        [HttpPut]
+        [Route("api/claimpost/{id:int}")]
+        public async Task<HttpResponseMessage> ClaimPost(int id, HttpRequestMessage request)
+        {
+            var jObject = await request.Content.ReadAsAsync<JObject>();
+            tbl_Post claimedPost = JsonConvert.DeserializeObject<tbl_Post>(jObject.ToString());
+            var message = Request.CreateResponse(HttpStatusCode.Accepted);
+
+            using (PantrDatabaseEntities db = new PantrDatabaseEntities())
+            {
+                tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == claimedPost.tbl_User.PK_User);
+
+                if (post == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                post.Claimed = true;
+
+                tbl_Transaction transaction = new tbl_Transaction()
+                {
+                    FK_Post = post.PK_Post,
+                    FK_Panter = id,
+                    Collected = false,
+                    Annulled = false
+                };
+
+                db.tbl_Transaction.Add(transaction);
+                db.SaveChanges();
+            }
+            return Request.CreateResponse(HttpStatusCode.Accepted);
+
+        }
+
         [HttpGet]
         [Route("api/posts/{zipcode}")]
         public HttpResponseMessage Get(string zipcode)
