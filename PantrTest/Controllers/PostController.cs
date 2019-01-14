@@ -55,28 +55,32 @@ namespace PantrTest.Controllers
         }
 
         [HttpPut]
-        [Route("api/claimpost/{id:int}")]
-        public async Task<HttpResponseMessage> ClaimPost(int id, HttpRequestMessage request)
+        [Route("api/claimpost")]
+        public async Task<HttpResponseMessage> ClaimPost(HttpRequestMessage request)
         {
             var jObject = await request.Content.ReadAsAsync<JObject>();
-            tbl_Post claimedPost = JsonConvert.DeserializeObject<tbl_Post>(jObject.ToString());
-            var message = Request.CreateResponse(HttpStatusCode.Accepted);
+            //tbl_Post claimedPost = JsonConvert.DeserializeObject<tbl_Post>(jObject.ToString());
+            int giverId = (int)jObject["giverId"];
+            int takerId = (int)jObject["takerId"];
+            int postId = (int)jObject["postId"];
+            HttpResponseMessage message = null;
 
             using (PantrDatabaseEntities db = new PantrDatabaseEntities())
             {
-                tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == claimedPost.tbl_User.PK_User);
+                //tbl_Post post = db.tbl_Post.FirstOrDefault(giver => giver.FK_Giver == claimedPost.tbl_User.PK_User);
+                tbl_Post claimedPost = db.tbl_Post.FirstOrDefault(p => p.PK_Post == postId);
 
-                if (post == null)
+                if (claimedPost == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                    return message = Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                post.Claimed = true;
+                claimedPost.Claimed = true;
 
                 tbl_Transaction transaction = new tbl_Transaction()
                 {
-                    FK_Post = post.PK_Post,
-                    FK_Panter = id,
+                    FK_Post = claimedPost.PK_Post,
+                    FK_Panter = takerId,
                     Collected = false,
                     Annulled = false
                 };
@@ -84,7 +88,7 @@ namespace PantrTest.Controllers
                 db.tbl_Transaction.Add(transaction);
                 db.SaveChanges();
             }
-            return Request.CreateResponse(HttpStatusCode.Accepted);
+            return message = Request.CreateResponse(HttpStatusCode.Accepted);
 
         }
 
